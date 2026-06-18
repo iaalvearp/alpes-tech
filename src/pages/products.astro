@@ -1,0 +1,77 @@
+---
+import Layout from "../layouts/Layout.astro";
+import Navbar from "../components/navigation/Navbar.astro";
+import Footer from "../components/navigation/Footer.astro";
+import SectionHeading from "../components/ui/SectionHeading.astro";
+import ProductCard from "../components/cards/ProductCard.astro";
+import { productsEn } from "../data/products";
+---
+
+<Layout
+  title="Products"
+  description="All software products by Alpes Tech. Developer tools, mobile IDEs, and more."
+  lang="en"
+>
+  <Navbar lang="en" />
+
+  <main id="main-content" tabindex="-1">
+    <!-- Page header -->
+    <section class="page-header" aria-label="Products page header">
+      <div class="triangle-pattern page-header-pattern" aria-hidden="true"></div>
+      <div class="orb orb-primary page-header-orb" aria-hidden="true"></div>
+
+      <div class="container page-header-content animate-fade-up">
+        <SectionHeading
+          eyebrow="Products"
+          title="Our Software"
+          subtitle="Every product we build is designed with developers in mind. Simple, focused, and powerful."
+          as="h1"
+        />
+      </div>
+    </section>
+
+    <!-- Products list -->
+    <section class="section" aria-label="Products catalog">
+      <div class="container">
+        <div class="products-grid">
+          {productsEn.map((product) => (
+            <ProductCard product={product} lang="en" />
+          ))}
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <Footer lang="en" />
+</Layout>
+
+<style>
+  .page-header {
+    position: relative;
+    overflow: hidden;
+    padding-top: 8rem;
+    padding-bottom: 4rem;
+    background: var(--gradient-hero);
+  }
+
+  .page-header-pattern {
+    position: absolute;
+    inset: 0;
+    opacity: 0.15;
+    pointer-events: none;
+  }
+
+  .page-header-orb {
+    width: 400px;
+    height: 400px;
+    top: -100px;
+    right: -100px;
+    opacity: 0.15;
+    pointer-events: none;
+  }
+
+  .page-header-content {
+    position: relative;
+    z-index: 1;
+  }
+</style>

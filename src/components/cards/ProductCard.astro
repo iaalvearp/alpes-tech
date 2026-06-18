@@ -1,0 +1,227 @@
+---
+import type { Product } from "../../data/products";
+
+interface Props {
+  product: Product;
+  lang?: "en" | "es";
+}
+
+const { product, lang = "en" } = Astro.props;
+const isComingSoon = product.status === "coming-soon";
+const isBeta = product.status === "beta";
+
+const comingSoonText = lang === "en" ? "Coming Soon" : "Próximamente";
+const visitText =
+  lang === "en" ? `Visit ${product.name} ↗` : `Visitar ${product.name} ↗`;
+const availableSoonText =
+  lang === "en" ? "Available soon" : "Disponible pronto";
+---
+
+<article
+  class:list={["product-card card", { "product-card--disabled": isComingSoon }]}
+  aria-label={`Product: ${product.name}`}
+>
+  <!-- Status badge -->
+  {
+    isComingSoon && (
+      <div class="product-status-badge product-status-badge--soon">
+        {comingSoonText}
+      </div>
+    )
+  }
+  {
+    isBeta && (
+      <div class="product-status-badge product-status-badge--beta">Beta</div>
+    )
+  }
+
+  <!-- Icon -->
+  <div class="product-icon" aria-hidden="true">{product.icon}</div>
+
+  <!-- Content -->
+  <div class="product-content">
+    <h3 class="product-name">{product.name}</h3>
+    <p class="product-tagline">{product.tagline}</p>
+
+    {
+      product.bullets && (
+        <ul class="product-bullets" aria-label={`Features of ${product.name}`}>
+          {product.bullets.map((bullet) => (
+            <li class="product-bullet">
+              <span class="bullet-dot" aria-hidden="true" />
+              {bullet}
+            </li>
+          ))}
+        </ul>
+      )
+    }
+
+    <p class="product-description">{product.description}</p>
+  </div>
+
+  <!-- Tags -->
+  <div class="product-tags" aria-label="Technology tags">
+    {product.tags.map((tag) => <span class="tag">{tag}</span>)}
+  </div>
+
+  <!-- CTA -->
+  <div class="product-cta">
+    {
+      !isComingSoon ? (
+        <a
+          href={product.url}
+          class="btn btn-primary product-btn"
+          target="_blank"
+          rel="noopener noreferrer"
+          aria-label={visitText}
+        >
+          {visitText}
+        </a>
+      ) : (
+        <span class="product-btn-disabled">{availableSoonText}</span>
+      )
+    }
+  </div>
+</article>
+
+<style>
+  .product-card {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    gap: 1.25rem;
+    padding: 1.75rem;
+    height: 100%;
+    transition:
+      box-shadow 250ms ease,
+      border-color 250ms ease,
+      transform 250ms ease;
+  }
+
+  .product-card--disabled {
+    opacity: 0.65;
+  }
+
+  .product-card--disabled:hover {
+    transform: none;
+    box-shadow: none;
+    border-color: hsl(var(--border) / 0.5);
+  }
+
+  /* Status badge */
+  .product-status-badge {
+    position: absolute;
+    top: 1.25rem;
+    right: 1.25rem;
+    font-family: "JetBrains Mono", monospace;
+    font-size: 0.65rem;
+    font-weight: 600;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    padding: 0.25rem 0.625rem;
+    border-radius: 9999px;
+  }
+
+  .product-status-badge--soon {
+    background: hsl(220 14% 20%);
+    color: hsl(var(--muted-foreground));
+    border: 1px solid hsl(var(--border));
+  }
+
+  .product-status-badge--beta {
+    background: hsl(var(--primary) / 0.1);
+    color: hsl(var(--primary));
+    border: 1px solid hsl(var(--primary) / 0.3);
+  }
+
+  /* Icon */
+  .product-icon {
+    font-size: 2.5rem;
+    line-height: 1;
+  }
+
+  /* Content */
+  .product-content {
+    display: flex;
+    flex-direction: column;
+    gap: 0.625rem;
+    flex: 1;
+  }
+
+  .product-name {
+    font-family: "Space Grotesk", sans-serif;
+    font-size: 1.35rem;
+    font-weight: 700;
+    color: hsl(var(--foreground));
+    letter-spacing: -0.02em;
+  }
+
+  .product-tagline {
+    font-family: "JetBrains Mono", monospace;
+    font-size: 0.8rem;
+    color: hsl(var(--primary));
+    font-weight: 500;
+  }
+
+  /* Bullets */
+  .product-bullets {
+    list-style: none;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.375rem 0.875rem;
+    margin-block: 0.25rem;
+  }
+
+  .product-bullet {
+    display: flex;
+    align-items: center;
+    gap: 0.375rem;
+    font-family: "JetBrains Mono", monospace;
+    font-size: 0.75rem;
+    color: hsl(var(--muted-foreground));
+    font-weight: 500;
+  }
+
+  .bullet-dot {
+    width: 4px;
+    height: 4px;
+    border-radius: 50%;
+    background: hsl(var(--primary));
+    flex-shrink: 0;
+  }
+
+  .product-description {
+    font-size: 0.9rem;
+    color: hsl(var(--muted-foreground));
+    line-height: 1.6;
+  }
+
+  /* Tags */
+  .product-tags {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.375rem;
+  }
+
+  /* CTA */
+  .product-cta {
+    margin-top: 0.5rem;
+  }
+
+  .product-btn {
+    width: 100%;
+    justify-content: center;
+    font-size: 0.875rem;
+    padding: 0.625rem 1.25rem;
+  }
+
+  .product-btn-disabled {
+    display: block;
+    text-align: center;
+    font-size: 0.875rem;
+    color: hsl(var(--muted-foreground));
+    padding: 0.625rem;
+    border: 1px dashed hsl(var(--border));
+    border-radius: var(--radius);
+  }
+</style>

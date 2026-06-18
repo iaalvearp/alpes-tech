@@ -1,0 +1,202 @@
+---
+import Layout from "../../layouts/Layout.astro";
+import Navbar from "../../components/navigation/Navbar.astro";
+import Footer from "../../components/navigation/Footer.astro";
+import AboutSection from "../../components/sections/AboutSection.astro";
+import SectionHeading from "../../components/ui/SectionHeading.astro";
+import CTAButton from "../../components/ui/CTAButton.astro";
+import { site } from "../../data/site";
+---
+
+<Layout
+  title="Nosotros"
+  description="Conoce a Alpes Tech: una empresa de tecnología que desarrolla productos de software para programadores."
+  lang="es"
+>
+  <Navbar lang="es" />
+
+  <main id="main-content" tabindex="-1">
+    <!-- Page header -->
+    <section class="page-header" aria-label="Cabecera de la página nosotros">
+      <div class="triangle-pattern page-header-pattern" aria-hidden="true"></div>
+      <div class="orb orb-primary page-header-orb" aria-hidden="true"></div>
+
+      <div class="container page-header-content animate-fade-up">
+        <SectionHeading
+          eyebrow="Nosotros"
+          title="Alpes Tech"
+          subtitle="Desarrollamos productos de software para programadores. Simples, enfocados y construidos para durar."
+          as="h1"
+        />
+
+        <div class="page-header-ctas">
+          <CTAButton href="/es/products" id="about-cta-products">Explorar Productos</CTAButton>
+          <CTAButton href="/es/contact" variant="secondary" id="about-cta-contact">Ponerse en Contacto</CTAButton>
+        </div>
+      </div>
+    </section>
+
+    <!-- Mission statement -->
+    <section class="section mission-section" aria-label="Misión">
+      <div class="container">
+        <div class="mission-card glass">
+          <div class="mission-eyebrow eyebrow-badge">
+            <span class="eyebrow-dot animate-pulse-glow" aria-hidden="true"></span>
+            <span>Nuestra misión</span>
+          </div>
+          <blockquote class="mission-quote">
+            "Hacer a los desarrolladores más potentes: en cualquier lugar, en cualquier dispositivo y en cualquier etapa de su camino."
+          </blockquote>
+          <p class="mission-text">
+            Alpes Tech nació de la convicción de que las grandes herramientas de desarrollo no deberían estar limitadas por hardware costoso
+            o configuraciones complejas. Creamos software que funciona donde están los desarrolladores, ya sea una estación de trabajo de alta gama
+            o un teléfono móvil en medio de la nada.
+          </p>
+        </div>
+      </div>
+    </section>
+
+    <!-- Areas section -->
+    <AboutSection lang="es" />
+
+    <!-- CTA -->
+    <section class="section cta-section" aria-label="Llamado a la acción">
+      <div class="container cta-container">
+        <div class="cta-card glass">
+          <div class="cta-glow" aria-hidden="true"></div>
+          <h2 class="cta-title">¿Listo para explorar?</h2>
+          <p class="cta-text">
+            Conoce nuestros productos o ponte en contacto con nosotros. Siempre estamos felices de conectarnos con la comunidad de desarrolladores.
+          </p>
+          <div class="cta-actions">
+            <CTAButton href="/es/products" id="about-bottom-cta-products">Ver nuestros productos</CTAButton>
+            <CTAButton href={site.github} variant="secondary" target="_blank" id="about-bottom-cta-github">GitHub ↗</CTAButton>
+          </div>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <Footer lang="es" />
+</Layout>
+
+<style>
+  .page-header {
+    position: relative;
+    overflow: hidden;
+    padding-top: 8rem;
+    padding-bottom: 4rem;
+    background: var(--gradient-hero);
+  }
+
+  .page-header-pattern {
+    position: absolute;
+    inset: 0;
+    opacity: 0.15;
+    pointer-events: none;
+  }
+
+  .page-header-orb {
+    width: 500px;
+    height: 500px;
+    top: -150px;
+    right: -100px;
+    opacity: 0.18;
+    pointer-events: none;
+  }
+
+  .page-header-content {
+    position: relative;
+    z-index: 1;
+    display: flex;
+    flex-direction: column;
+    gap: 2rem;
+  }
+
+  .page-header-ctas {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.875rem;
+    justify-content: center;
+  }
+
+  /* Mission */
+  .mission-section {
+    padding-top: 0;
+  }
+
+  .mission-card {
+    max-width: 760px;
+    margin-inline: auto;
+    padding: 2.5rem;
+    border-radius: calc(var(--radius) * 1.5);
+    display: flex;
+    flex-direction: column;
+    gap: 1.25rem;
+  }
+
+  .mission-quote {
+    font-family: 'Space Grotesk', sans-serif;
+    font-size: clamp(1.1rem, 2.5vw, 1.35rem);
+    font-weight: 600;
+    color: hsl(var(--foreground));
+    line-height: 1.5;
+    letter-spacing: -0.01em;
+    border-left: 3px solid hsl(var(--primary));
+    padding-left: 1.25rem;
+    margin: 0;
+  }
+
+  .mission-text {
+    font-size: 0.95rem;
+    color: hsl(var(--muted-foreground));
+    line-height: 1.7;
+  }
+
+  /* CTA section */
+  .cta-container {
+    max-width: 720px;
+  }
+
+  .cta-card {
+    position: relative;
+    padding: 3rem 2.5rem;
+    border-radius: calc(var(--radius) * 1.5);
+    text-align: center;
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 1.25rem;
+  }
+
+  .cta-glow {
+    position: absolute;
+    top: 0;
+    inset-inline: 0;
+    height: 1px;
+    background: linear-gradient(90deg, transparent, hsl(var(--primary) / 0.6), transparent);
+  }
+
+  .cta-title {
+    font-family: 'Space Grotesk', sans-serif;
+    font-size: clamp(1.5rem, 3vw, 2rem);
+    font-weight: 700;
+    color: hsl(var(--foreground));
+  }
+
+  .cta-text {
+    font-size: 0.95rem;
+    color: hsl(var(--muted-foreground));
+    line-height: 1.65;
+    max-width: 460px;
+  }
+
+  .cta-actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.875rem;
+    justify-content: center;
+    margin-top: 0.5rem;
+  }
+</style>

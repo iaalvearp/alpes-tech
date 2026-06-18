@@ -1,0 +1,62 @@
+---
+import "../styles/global.css";
+import { site } from "../data/site";
+
+interface Props {
+  title?: string;
+  description?: string;
+  canonical?: string;
+  lang?: "en" | "es";
+}
+
+const {
+  title,
+  description,
+  canonical = Astro.url.href,
+  lang = "en",
+} = Astro.props;
+
+const siteData = site[lang];
+const defaultTitle = site.name;
+const defaultDescription = siteData.description;
+
+const fullTitle = !title ? `${defaultTitle} — ${siteData.tagline}` : `${title} — ${defaultTitle}`;
+const metaDescription = description || defaultDescription;
+---
+
+<!doctype html>
+<html lang={lang}>
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="generator" content={Astro.generator} />
+
+    <!-- SEO -->
+    <title>{fullTitle}</title>
+    <meta name="description" content={metaDescription} />
+    <link rel="canonical" href={canonical} />
+
+    <!-- Open Graph -->
+    <meta property="og:type"        content="website" />
+    <meta property="og:url"         content={canonical} />
+    <meta property="og:title"       content={fullTitle} />
+    <meta property="og:description" content={metaDescription} />
+    <meta property="og:site_name"   content={site.name} />
+
+    <!-- Twitter Card -->
+    <meta name="twitter:card"        content="summary_large_image" />
+    <meta name="twitter:title"       content={fullTitle} />
+    <meta name="twitter:description" content={metaDescription} />
+
+    <!-- Theme -->
+    <meta name="theme-color" content="#0d1117" />
+    <meta name="color-scheme" content="dark" />
+
+    <!-- Favicon -->
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <link rel="icon" href="/favicon.ico" />
+  </head>
+  <body>
+    <slot />
+  </body>
+</html>

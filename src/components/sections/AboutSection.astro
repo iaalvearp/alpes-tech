@@ -1,0 +1,258 @@
+---
+import SectionHeading from "../ui/SectionHeading.astro";
+
+interface Props {
+  lang?: "en" | "es";
+}
+
+const { lang = "en" } = Astro.props;
+
+const areasEn = [
+  {
+    icon: "⚙️",
+    title: "Software Development",
+    description:
+      "We craft software that prioritizes developer experience. From CLI tools to full IDEs, we build utilities that fit naturally into developer workflows.",
+  },
+  {
+    icon: "🛠️",
+    title: "Developer Tools",
+    description:
+      "Productivity tools for programmers. Editors, debuggers, runtimes, and environments that make coding faster, easier, and more enjoyable.",
+  },
+  {
+    icon: "🤖",
+    title: "Artificial Intelligence",
+    description:
+      "AI-powered features integrated into our tools. Smart suggestions, code analysis, and automation that augment developer productivity.",
+  },
+  {
+    icon: "☁️",
+    title: "Cloud Platforms",
+    description:
+      "Lightweight cloud infrastructure for indie developers and small teams. Deploy, scale, and manage apps without enterprise complexity.",
+  },
+  {
+    icon: "🔄",
+    title: "Automation",
+    description:
+      "Pipelines, workflows, and scripts that eliminate repetitive tasks. Focus on building — let automation handle the rest.",
+  },
+  {
+    icon: "🌐",
+    title: "Open Technologies",
+    description:
+      "We believe in open standards, open source, and open ecosystems. Our products are built on technologies that empower the community.",
+  },
+];
+
+const areasEs = [
+  {
+    icon: "⚙️",
+    title: "Desarrollo de Software",
+    description:
+      "Creamos software que prioriza la experiencia del desarrollador. Desde herramientas de CLI hasta IDEs completos, creamos utilidades que se integran de forma natural en tu flujo de trabajo.",
+  },
+  {
+    icon: "🛠️",
+    title: "Herramientas de Desarrollo",
+    description:
+      "Herramientas de productividad para programadores. Editores, depuradores, entornos de ejecución y entornos de desarrollo que hacen que programar sea más rápido, fácil y divertido.",
+  },
+  {
+    icon: "🤖",
+    title: "Inteligencia Artificial",
+    description:
+      "Funciones impulsadas por IA integradas en nuestras herramientas. Sugerencias inteligentes, análisis de código y automatización que aumentan la productividad.",
+  },
+  {
+    icon: "☁️",
+    title: "Plataformas en la Nube",
+    description:
+      "Infraestructura en la nube ligera para desarrolladores independientes y equipos pequeños. Implementa, escala y gestiona aplicaciones sin la complejidad empresarial.",
+  },
+  {
+    icon: "🔄",
+    title: "Automatización",
+    description:
+      "Flujos de trabajo, pipelines y scripts que eliminan tareas repetitivas. Concéntrate en construir: deja que la automatización se encargue del resto.",
+  },
+  {
+    icon: "🌐",
+    title: "Tecnologías Abiertas",
+    description:
+      "Creemos en los estándares abiertos, el código abierto y los ecosistemas abiertos. Nuestros productos están construidos sobre tecnologías que empoderan a la comunidad.",
+  },
+];
+
+const areas = lang === "en" ? areasEn : areasEs;
+
+// Translations
+const eyebrow = lang === "en" ? "About" : "Nosotros";
+const subtitle =
+  lang === "en"
+    ? "We're a technology company focused on building software products that empower developers. We care about simplicity, performance, and great developer experience."
+    : "Somos una empresa de tecnología enfocada en desarrollar productos de software que potencian a los desarrolladores. Nos importa la simplicidad, el rendimiento y una gran experiencia de desarrollo.";
+
+const stat1 = lang === "en" ? "Products launched" : "Productos lanzados";
+const stat2 = lang === "en" ? "Lines of passion" : "Líneas de pasión";
+const stat3 = lang === "en" ? "Built globally" : "Desarrollado globalmente";
+---
+
+<section
+  id="about"
+  class="section about-section"
+  aria-labelledby="about-heading"
+>
+  <!-- Subtle background pattern -->
+  <div class="about-pattern triangle-pattern" aria-hidden="true"></div>
+
+  <div class="container about-container">
+    <!-- Intro -->
+    <div class="about-intro">
+      <SectionHeading
+        eyebrow={eyebrow}
+        title="Alpes Tech"
+        subtitle={subtitle}
+        align="center"
+      />
+    </div>
+
+    <!-- Stats row -->
+    <div class="about-stats" role="list" aria-label="Company highlights">
+      <div class="about-stat" role="listitem">
+        <span class="stat-value gradient-text">1+</span>
+        <span class="stat-label">{stat1}</span>
+      </div>
+      <div class="about-stat-divider" aria-hidden="true"></div>
+      <div class="about-stat" role="listitem">
+        <span class="stat-value gradient-text">∞</span>
+        <span class="stat-label">{stat2}</span>
+      </div>
+      <div class="about-stat-divider" aria-hidden="true"></div>
+      <div class="about-stat" role="listitem">
+        <span class="stat-value gradient-text">🌎</span>
+        <span class="stat-label">{stat3}</span>
+      </div>
+    </div>
+
+    <!-- Areas grid -->
+    <div
+      class="feature-grid about-grid"
+      role="list"
+      aria-label="Technology focus areas"
+    >
+      {
+        areas.map((area) => (
+          <article class="card about-feature-card" role="listitem">
+            <div class="about-feature-icon" aria-hidden="true">
+              {area.icon}
+            </div>
+            <h3 class="about-feature-title">{area.title}</h3>
+            <p class="about-feature-desc">{area.description}</p>
+          </article>
+        ))
+      }
+    </div>
+  </div>
+</section>
+
+<style>
+  .about-section {
+    position: relative;
+    overflow: hidden;
+  }
+
+  .about-pattern {
+    position: absolute;
+    inset: 0;
+    opacity: 0.08;
+    pointer-events: none;
+  }
+
+  .about-container {
+    position: relative;
+    z-index: 1;
+    display: flex;
+    flex-direction: column;
+    gap: 3.5rem;
+  }
+
+  .about-intro {
+    max-width: 680px;
+    margin-inline: auto;
+  }
+
+  /* Stats */
+  .about-stats {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-wrap: wrap;
+    gap: 2rem;
+    padding: 2rem;
+    background: hsl(var(--card) / 0.5);
+    border: 1px solid hsl(var(--border) / 0.5);
+    border-radius: var(--radius);
+    backdrop-filter: blur(12px);
+  }
+
+  .about-stat {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0.25rem;
+    text-align: center;
+  }
+
+  .stat-value {
+    font-family: "Space Grotesk", sans-serif;
+    font-size: 2rem;
+    font-weight: 700;
+    line-height: 1;
+  }
+
+  .stat-label {
+    font-size: 0.8rem;
+    color: hsl(var(--muted-foreground));
+    font-family: "JetBrains Mono", monospace;
+  }
+
+  .about-stat-divider {
+    width: 1px;
+    height: 2.5rem;
+    background: hsl(var(--border));
+    display: none;
+  }
+
+  @media (min-width: 640px) {
+    .about-stat-divider {
+      display: block;
+    }
+  }
+
+  /* Feature cards */
+  .about-feature-card {
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem;
+  }
+
+  .about-feature-icon {
+    font-size: 1.75rem;
+    line-height: 1;
+  }
+
+  .about-feature-title {
+    font-family: "Space Grotesk", sans-serif;
+    font-size: 1.05rem;
+    font-weight: 600;
+    color: hsl(var(--foreground));
+  }
+
+  .about-feature-desc {
+    font-size: 0.875rem;
+    color: hsl(var(--muted-foreground));
+    line-height: 1.65;
+  }
+</style>

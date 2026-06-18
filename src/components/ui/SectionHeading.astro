@@ -1,0 +1,72 @@
+---
+interface Props {
+  eyebrow?: string;
+  title: string;
+  subtitle?: string;
+  align?: "center" | "left";
+  as?: "h1" | "h2" | "h3";
+}
+
+const {
+  eyebrow,
+  title,
+  subtitle,
+  align = "center",
+  as: Tag = "h2",
+} = Astro.props;
+---
+
+<div class:list={["section-heading", `section-heading--${align}`]}>
+  {
+    eyebrow && (
+      <div class="eyebrow-badge section-eyebrow">
+        <span class="eyebrow-dot animate-pulse-glow" aria-hidden="true" />
+        <span>{eyebrow}</span>
+      </div>
+    )
+  }
+  <Tag class="section-title">{title}</Tag>
+  {subtitle && <p class="section-subtitle">{subtitle}</p>}
+</div>
+
+<style>
+  .section-heading {
+    display: flex;
+    flex-direction: column;
+    gap: 0.875rem;
+  }
+
+  .section-heading--center {
+    align-items: center;
+    text-align: center;
+  }
+
+  .section-heading--left {
+    align-items: flex-start;
+    text-align: left;
+  }
+
+  .section-eyebrow {
+    margin-bottom: 0.25rem;
+  }
+
+  .section-title {
+    font-family: "Space Grotesk", sans-serif;
+    font-size: clamp(1.75rem, 4vw, 2.5rem);
+    font-weight: 700;
+    letter-spacing: -0.025em;
+    line-height: 1.15;
+    color: hsl(var(--foreground));
+  }
+
+  .section-subtitle {
+    font-size: 1.05rem;
+    color: hsl(var(--muted-foreground));
+    line-height: 1.65;
+    max-width: 560px;
+  }
+
+  .section-heading--center .section-subtitle {
+    margin-inline: auto;
+  }
+</style>
