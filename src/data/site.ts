@@ -6,7 +6,6 @@
 export const site = {
   name: "Alpes Tech",
   url: "https://alpestech.uk",
-  github: "https://github.com/iaalvearp",
   contact: {
     email: "info@alpestech.uk",
   },
@@ -15,10 +14,11 @@ export const site = {
     description:
       "Software products, developer tools, artificial intelligence and cloud solutions.",
     nav: [
-      { label: "Home", href: "/", id: "nav-home" },
-      { label: "Products", href: "/products", id: "nav-products" },
-      { label: "About", href: "/about", id: "nav-about" },
-      { label: "Contact", href: "/contact", id: "nav-contact" },
+      { label: "Home", href: "/#inicio", id: "nav-home", section: "inicio" },
+      { label: "Services", href: "/#servicios", id: "nav-services", section: "servicios" },
+      { label: "Solutions", href: "/#soluciones", id: "nav-solutions", section: "soluciones" },
+      { label: "About", href: "/#nosotros", id: "nav-about", section: "nosotros" },
+      { label: "Contact", href: "/#contacto", id: "nav-contact", section: "contacto" },
     ] as const,
     areas: [
       "Developer Tools",
@@ -33,10 +33,11 @@ export const site = {
     description:
       "Productos de software, herramientas para desarrolladores, inteligencia artificial y soluciones en la nube.",
     nav: [
-      { label: "Inicio", href: "/es/", id: "nav-home" },
-      { label: "Productos", href: "/es/products", id: "nav-products" },
-      { label: "Nosotros", href: "/es/about", id: "nav-about" },
-      { label: "Contacto", href: "/es/contact", id: "nav-contact" },
+      { label: "Inicio", href: "/es/#inicio", id: "nav-home", section: "inicio" },
+      { label: "Servicios", href: "/es/#servicios", id: "nav-servicios", section: "servicios" },
+      { label: "Soluciones", href: "/es/#soluciones", id: "nav-soluciones", section: "soluciones" },
+      { label: "Nosotros", href: "/es/#nosotros", id: "nav-nosotros", section: "nosotros" },
+      { label: "Contacto", href: "/es/#contacto", id: "nav-contacto", section: "contacto" },
     ] as const,
     areas: [
       "Herramientas para Desarrolladores",

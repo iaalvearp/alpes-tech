@@ -1,0 +1,98 @@
+---
+import SectionHeading from "../ui/SectionHeading.astro";
+import CTAButton from "../ui/CTAButton.astro";
+import TiltCard from "../ui/TiltCard.astro";
+import { getItems } from "../../data/details";
+
+interface Props {
+  lang?: "en" | "es";
+  showCta?: boolean;
+  hideHeading?: boolean;
+}
+
+const { lang = "en", showCta = true, hideHeading = false } = Astro.props;
+
+const services = getItems("services", lang);
+
+const eyebrow = lang === "en" ? "Services" : "Servicios";
+const title = lang === "en" ? "What We Do" : "Lo que Hacemos";
+const subtitle =
+  lang === "en"
+    ? "End-to-end technology services that cover the full life cycle of your software."
+    : "Servicios tecnológicos integrales que cubren todo el ciclo de vida de tu software.";
+
+const ctaLabel = lang === "en" ? "View all services" : "Ver todos los servicios";
+const ctaHref = lang === "es" ? "/es/servicios" : "/services";
+---
+
+<section id="servicios" class="section" aria-labelledby="services-heading">
+  <div class="container">
+    {
+      !hideHeading && (
+        <div class="section-header">
+          <SectionHeading eyebrow={eyebrow} title={title} subtitle={subtitle} />
+        </div>
+      )
+    }
+
+    <div class="feature-grid" role="list" aria-label="Services">
+      {
+        services.map((service) => (
+          <TiltCard
+            class="service-card"
+            ariaLabel={service.cardTitle}
+          >
+            <div class="service-icon" aria-hidden="true">
+              {service.icon}
+            </div>
+            <h3 class="service-title">{service.cardTitle}</h3>
+            <p class="service-desc">{service.cardDescription}</p>
+          </TiltCard>
+        ))
+      }
+    </div>
+
+    {
+      showCta && (
+        <div class="services-cta">
+          <CTAButton href={ctaHref} id="services-view-all">
+            {ctaLabel}
+          </CTAButton>
+        </div>
+      )
+    }
+  </div>
+</section>
+
+<style>
+  .service-card {
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem;
+  }
+
+  .service-icon {
+    font-size: 1.75rem;
+    line-height: 1;
+  }
+
+  .service-title {
+    font-family: "Space Grotesk", sans-serif;
+    font-size: 1.05rem;
+    font-weight: 600;
+    color: hsl(var(--foreground));
+  }
+
+  .service-desc {
+    font-size: 0.875rem;
+    color: hsl(var(--muted-foreground));
+    line-height: 1.65;
+    flex: 1;
+  }
+
+  .services-cta {
+    display: flex;
+    justify-content: center;
+    margin-top: 2.5rem;
+  }
+</style>

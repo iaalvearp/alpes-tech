@@ -28,7 +28,7 @@ const ecosystemMessage =
         class="footer-wordmark"
         aria-label="Alpes Tech"
       >
-        <span aria-hidden="true">⛰</span>
+        <img src="/favicon.svg" alt="" width="24" height="24" aria-hidden="true" style="flex-shrink: 0;" />
         <span>
           <span style="color: hsl(var(--foreground))">Alpes</span><span
             class="footer-accent">Tech</span
@@ -58,14 +58,6 @@ const ecosystemMessage =
       <div class="footer-nav-group">
         <h3 class="footer-nav-title">{connectHeader}</h3>
         <ul>
-          <li>
-            <a
-              href={site.github}
-              class="footer-link"
-              target="_blank"
-              rel="noopener noreferrer">GitHub ↗</a
-            >
-          </li>
           <li>
             <a href={`mailto:${site.contact.email}`} class="footer-link">
               {site.contact.email}

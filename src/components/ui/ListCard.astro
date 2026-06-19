@@ -1,0 +1,165 @@
+---
+/**
+ * ListCard.astro — Card grande para páginas de listado.
+ * Imagen a un lado, título y bullets al otro.
+ * Sin efecto tilt. Sombra + scale(1.02) en hover.
+ */
+import type { DetailItem } from "../../data/details";
+
+interface Props {
+  item: DetailItem;
+  index: number;
+}
+
+const { item, index } = Astro.props;
+const isReversed = index % 2 !== 0;
+
+const placeholderSrc = `https://placehold.co/640x400/0d1117/7fd4f5/png?text=${encodeURIComponent(
+  item.cardTitle,
+)}`;
+
+const imageAlt = `${item.cardTitle} — Alpes Tech`;
+const promptComment = `<!-- AI IMAGE PROMPT para ${item.cardTitle}: ${item.heroPrompt} -->`;
+---
+
+<article class="list-card" aria-label={item.cardTitle}>
+  <div class:list={["list-card-inner", isReversed && "list-card-inner--reversed"]}>
+    <!-- Image side -->
+    <div class="list-card-image-side">
+      <Fragment set:html={promptComment} />
+      <img
+        src={placeholderSrc}
+        alt={imageAlt}
+        width="640"
+        height="400"
+        loading="lazy"
+        class="list-card-img"
+      />
+    </div>
+
+    <!-- Content side -->
+    <div class="list-card-content">
+      <div class="list-card-icon" aria-hidden="true">{item.icon}</div>
+      <h3 class="list-card-title">{item.cardTitle}</h3>
+      <p class="list-card-desc">{item.cardDescription}</p>
+      <ul class="list-card-bullets">
+        {item.bullets.map((bullet) => (
+          <li class="list-card-bullet">
+            <span class="list-card-bullet-dot" aria-hidden="true">✦</span>
+            <span>{bullet}</span>
+          </li>
+        ))}
+      </ul>
+    </div>
+  </div>
+</article>
+
+<style>
+  .list-card {
+    border-radius: calc(var(--radius) * 1.5);
+    border: 1px solid hsl(var(--border) / 0.5);
+    background: hsl(var(--card) / 0.4);
+    backdrop-filter: blur(12px);
+    overflow: hidden;
+    transition:
+      box-shadow var(--transition-base),
+      border-color var(--transition-base),
+      transform var(--transition-base);
+  }
+
+  .list-card:hover {
+    box-shadow: var(--shadow-glow);
+    border-color: hsl(var(--primary) / 0.4);
+    transform: scale(1.02);
+  }
+
+  .list-card-inner {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 0;
+  }
+
+  @media (min-width: 768px) {
+    .list-card-inner {
+      grid-template-columns: 1fr 1fr;
+    }
+  }
+
+  .list-card-inner--reversed .list-card-image-side {
+    order: 1;
+  }
+
+  @media (min-width: 768px) {
+    .list-card-inner--reversed .list-card-image-side {
+      order: 1;
+    }
+    .list-card-inner--reversed .list-card-content {
+      order: 0;
+    }
+  }
+
+  /* Image */
+  .list-card-image-side {
+    position: relative;
+    overflow: hidden;
+    min-height: 240px;
+  }
+
+  .list-card-img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+  }
+
+  /* Content */
+  .list-card-content {
+    display: flex;
+    flex-direction: column;
+    gap: 0.875rem;
+    padding: 2rem;
+  }
+
+  .list-card-icon {
+    font-size: 2rem;
+    line-height: 1;
+  }
+
+  .list-card-title {
+    font-family: "Space Grotesk", sans-serif;
+    font-size: 1.35rem;
+    font-weight: 700;
+    color: hsl(var(--foreground));
+    letter-spacing: -0.02em;
+  }
+
+  .list-card-desc {
+    font-size: 0.9rem;
+    color: hsl(var(--muted-foreground));
+    line-height: 1.6;
+  }
+
+  .list-card-bullets {
+    list-style: none;
+    display: flex;
+    flex-direction: column;
+    gap: 0.625rem;
+    margin-top: 0.25rem;
+  }
+
+  .list-card-bullet {
+    display: flex;
+    align-items: flex-start;
+    gap: 0.625rem;
+    font-size: 0.9rem;
+    line-height: 1.5;
+    color: hsl(var(--foreground) / 0.9);
+  }
+
+  .list-card-bullet-dot {
+    color: hsl(var(--primary));
+    flex-shrink: 0;
+    margin-top: 0.05rem;
+    font-size: 0.75rem;
+  }
+</style>

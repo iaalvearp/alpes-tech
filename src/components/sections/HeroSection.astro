@@ -1,5 +1,4 @@
 ---
-import { site } from "../../data/site";
 import CTAButton from "../ui/CTAButton.astro";
 
 interface Props {
@@ -7,28 +6,36 @@ interface Props {
 }
 
 const { lang = "en" } = Astro.props;
-const siteData = site[lang];
 
 const eyebrowText =
   lang === "en"
     ? "Software · Tools · AI · Cloud"
     : "Software · Herramientas · IA · Nube";
 const exploreText = lang === "en" ? "Explore Products" : "Explorar Productos";
-const missionCodeValue =
-  lang === "en" ? "Build for devs" : "Desarrollar para devs";
-const commentCodeValue =
-  lang === "en" ? "// more coming…" : "// más en camino…";
-const openSourceCodeValue = lang === "en" ? "Open Source" : "Código Abierto";
 const productsLink = lang === "es" ? "/es/products" : "/products";
 ---
 
-<section id="hero" class="hero-section bg-gradient-hero" aria-label="Hero">
-  <!-- Background decorations -->
-  <div class="triangle-pattern hero-pattern" aria-hidden="true"></div>
-  <div class="orb orb-primary hero-orb-1" aria-hidden="true"></div>
-  <div class="orb orb-primary hero-orb-2" aria-hidden="true"></div>
-  <div class="orb orb-secondary hero-orb-3" aria-hidden="true"></div>
+<section id="inicio" class="hero-section" aria-label="Hero">
+  <!-- Video background -->
+  <div class="hero-video-bg" aria-hidden="true">
+    <video
+      class="hero-video"
+      src="/alpes_hero.mp4"
+      autoplay
+      muted
+      loop
+      playsinline
+      preload="auto"
+    >
+      Your browser does not support the video tag.
+    </video>
+    <div class="hero-video-overlay"></div>
+  </div>
 
+  <!-- Foreground pattern -->
+  <div class="triangle-pattern hero-pattern" aria-hidden="true"></div>
+
+  <!-- Content -->
   <div class="container hero-container">
     <div class="hero-content">
       <!-- Eyebrow -->
@@ -46,99 +53,14 @@ const productsLink = lang === "es" ? "/es/products" : "/products";
 
       <!-- Tagline -->
       <p class="hero-tagline animate-fade-up-delay-2">
-        {siteData.tagline}
+        Building software products for developers.
       </p>
 
-      <!-- Areas list -->
-      <ul class="hero-areas animate-fade-up-delay-3" aria-label="Focus areas">
-        {
-          siteData.areas.map((area) => (
-            <li class="hero-area-item">
-              <span class="hero-area-dot" aria-hidden="true" />
-              <span>{area}</span>
-            </li>
-          ))
-        }
-      </ul>
-
-      <!-- CTAs -->
-      <div class="hero-ctas animate-fade-up-delay-4">
+      <!-- CTA -->
+      <div class="hero-ctas animate-fade-up-delay-3">
         <CTAButton href={productsLink} variant="primary" id="hero-cta-products">
           {exploreText}
         </CTAButton>
-        <CTAButton
-          href={site.github}
-          variant="secondary"
-          target="_blank"
-          id="hero-cta-github"
-        >
-          <svg
-            width="16"
-            height="16"
-            viewBox="0 0 24 24"
-            fill="currentColor"
-            aria-hidden="true"
-          >
-            <path
-              d="M12 2C6.477 2 2 6.477 2 12c0 4.418 2.865 8.166 6.839 9.489.5.092.682-.217.682-.482 0-.237-.009-.868-.013-1.703-2.782.604-3.369-1.342-3.369-1.342-.454-1.155-1.11-1.462-1.11-1.462-.908-.62.069-.608.069-.608 1.003.07 1.531 1.03 1.531 1.03.892 1.529 2.341 1.087 2.91.832.092-.647.35-1.088.636-1.338-2.22-.253-4.555-1.11-4.555-4.943 0-1.091.39-1.984 1.029-2.683-.103-.253-.446-1.27.098-2.647 0 0 .84-.269 2.75 1.025A9.578 9.578 0 0 1 12 6.836a9.59 9.59 0 0 1 2.504.337c1.909-1.294 2.747-1.025 2.747-1.025.546 1.377.202 2.394.1 2.647.64.699 1.028 1.592 1.028 2.683 0 3.842-2.339 4.687-4.566 4.935.359.309.678.919.678 1.852 0 1.336-.012 2.415-.012 2.743 0 .267.18.578.688.48C19.138 20.163 22 16.418 22 12c0-5.523-4.477-10-10-10z"
-            ></path>
-          </svg>
-          GitHub
-        </CTAButton>
-      </div>
-    </div>
-
-    <!-- Decorative right panel -->
-    <div class="hero-visual animate-fade-in" aria-hidden="true">
-      <div class="hero-code-panel glass">
-        <div class="code-panel-header">
-          <span class="code-dot code-dot-red"></span>
-          <span class="code-dot code-dot-yellow"></span>
-          <span class="code-dot code-dot-green"></span>
-          <span class="code-panel-title">alpestech.uk</span>
-        </div>
-        <div class="code-panel-body">
-          <p class="code-line">
-            <span class="code-keyword">const</span>
-            <span class="code-var">company</span> = {"{"}
-          </p>
-          <p class="code-line code-indent">
-            <span class="code-key">name</span>: <span class="code-string"
-              >"Alpes Tech"</span
-            >,
-          </p>
-          <p class="code-line code-indent">
-            <span class="code-key">mission</span>: <span class="code-string"
-              >"{missionCodeValue}"</span
-            >,
-          </p>
-          <p class="code-line code-indent">
-            <span class="code-key">products</span>: [
-          </p>
-          <p class="code-line code-indent2">
-            <span class="code-string">"AlPy Script"</span>,
-          </p>
-          <p class="code-line code-indent2">
-            <span class="code-comment">{commentCodeValue}</span>
-          </p>
-          <p class="code-line code-indent">],</p>
-          <p class="code-line code-indent">
-            <span class="code-key">stack</span>: [
-          </p>
-          <p class="code-line code-indent2">
-            <span class="code-string">"AI"</span>, <span class="code-string"
-              >"Cloud"</span
-            >,
-          </p>
-          <p class="code-line code-indent2">
-            <span class="code-string">"{openSourceCodeValue}"</span>
-          </p>
-          <p class="code-line code-indent">],</p>
-          <p class="code-line">{"}"}</p>
-          <p class="code-line code-cursor">
-            <span class="cursor-blink">▋</span>
-          </p>
-        </div>
       </div>
     </div>
   </div>
@@ -156,6 +78,7 @@ const productsLink = lang === "es" ? "/es/products" : "/products";
     min-height: 90vh;
     display: flex;
     align-items: center;
+    justify-content: center;
   }
 
   @media (min-width: 1024px) {
@@ -165,59 +88,57 @@ const productsLink = lang === "es" ? "/es/products" : "/products";
     }
   }
 
+  /* ── Video background ── */
+  .hero-video-bg {
+    position: absolute;
+    inset: 0;
+    z-index: 0;
+    overflow: hidden;
+  }
+
+  .hero-video {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+  }
+
+  .hero-video-overlay {
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(
+      180deg,
+      hsl(var(--background) / 0.7) 0%,
+      hsl(var(--background) / 0.5) 50%,
+      hsl(var(--background) / 0.85) 100%
+    );
+  }
+
+  /* ── Pattern overlay ── */
   .hero-pattern {
     position: absolute;
     inset: 0;
-    opacity: 0.2;
+    z-index: 1;
+    opacity: 0.15;
     pointer-events: none;
   }
 
-  /* Orbs */
-  .hero-orb-1 {
-    width: 480px;
-    height: 480px;
-    top: -100px;
-    left: -80px;
-    opacity: 0.25;
-  }
-  .hero-orb-2 {
-    width: 600px;
-    height: 600px;
-    bottom: -200px;
-    right: -100px;
-    opacity: 0.15;
-  }
-  .hero-orb-3 {
-    width: 300px;
-    height: 300px;
-    top: 50%;
-    left: 60%;
-    opacity: 0.1;
-  }
-
-  /* Container layout */
+  /* ── Container ── */
   .hero-container {
     position: relative;
-    z-index: 10;
-    display: grid;
-    grid-template-columns: 1fr;
-    gap: 3rem;
-    align-items: center;
+    z-index: 2;
+    display: flex;
+    justify-content: center;
   }
 
-  @media (min-width: 1024px) {
-    .hero-container {
-      grid-template-columns: 1.15fr 0.85fr;
-      gap: 4rem;
-    }
-  }
-
-  /* Content */
+  /* ── Content ── */
   .hero-content {
     display: flex;
     flex-direction: column;
+    align-items: center;
     gap: 1.5rem;
-    max-width: 580px;
+    max-width: 680px;
+    text-align: center;
   }
 
   .hero-title {
@@ -240,34 +161,7 @@ const productsLink = lang === "es" ? "/es/products" : "/products";
     font-size: clamp(1rem, 2.5vw, 1.2rem);
     color: hsl(var(--muted-foreground));
     line-height: 1.65;
-    max-width: 440px;
-  }
-
-  /* Areas */
-  .hero-areas {
-    list-style: none;
-    display: flex;
-    flex-direction: column;
-    gap: 0.5rem;
-  }
-
-  .hero-area-item {
-    display: flex;
-    align-items: center;
-    gap: 0.625rem;
-    font-family: "JetBrains Mono", monospace;
-    font-size: 0.8rem;
-    color: hsl(var(--muted-foreground));
-    font-weight: 400;
-    letter-spacing: 0.02em;
-  }
-
-  .hero-area-dot {
-    width: 6px;
-    height: 6px;
-    border-radius: 50%;
-    background: hsl(var(--primary) / 0.6);
-    flex-shrink: 0;
+    max-width: 520px;
   }
 
   /* CTAs */
@@ -275,116 +169,8 @@ const productsLink = lang === "es" ? "/es/products" : "/products";
     display: flex;
     flex-wrap: wrap;
     gap: 0.875rem;
+    justify-content: center;
     margin-top: 0.5rem;
-  }
-
-  /* Visual / Code panel */
-  .hero-visual {
-    display: none;
-  }
-
-  @media (min-width: 1024px) {
-    .hero-visual {
-      display: flex;
-      justify-content: flex-end;
-    }
-  }
-
-  .hero-code-panel {
-    width: 100%;
-    max-width: 380px;
-    border-radius: calc(var(--radius) * 1.5);
-    overflow: hidden;
-  }
-
-  .code-panel-header {
-    display: flex;
-    align-items: center;
-    gap: 0.4rem;
-    padding: 0.875rem 1rem;
-    background: hsl(var(--surface-3) / 0.8);
-    border-bottom: 1px solid hsl(var(--border) / 0.5);
-  }
-
-  .code-dot {
-    width: 12px;
-    height: 12px;
-    border-radius: 50%;
-    flex-shrink: 0;
-  }
-  .code-dot-red {
-    background: hsl(0 70% 55%);
-  }
-  .code-dot-yellow {
-    background: hsl(45 80% 55%);
-  }
-  .code-dot-green {
-    background: hsl(140 60% 50%);
-  }
-
-  .code-panel-title {
-    font-family: "JetBrains Mono", monospace;
-    font-size: 0.7rem;
-    color: hsl(var(--muted-foreground));
-    margin-left: 0.25rem;
-  }
-
-  .code-panel-body {
-    padding: 1.25rem;
-    display: flex;
-    flex-direction: column;
-    gap: 0.2rem;
-  }
-
-  .code-line {
-    font-family: "JetBrains Mono", monospace;
-    font-size: 0.78rem;
-    line-height: 1.7;
-    color: hsl(var(--foreground) / 0.9);
-  }
-
-  .code-indent {
-    padding-left: 1.25rem;
-  }
-  .code-indent2 {
-    padding-left: 2.5rem;
-  }
-
-  .code-keyword {
-    color: hsl(280 60% 75%);
-  }
-  .code-var {
-    color: hsl(210 80% 75%);
-  }
-  .code-key {
-    color: hsl(var(--foreground) / 0.85);
-  }
-  .code-string {
-    color: hsl(140 50% 70%);
-  }
-  .code-comment {
-    color: hsl(var(--muted-foreground));
-    font-style: italic;
-  }
-
-  .code-cursor {
-    color: hsl(var(--primary));
-    margin-top: 0.25rem;
-  }
-
-  @keyframes blink {
-    0%,
-    100% {
-      opacity: 1;
-    }
-    50% {
-      opacity: 0;
-    }
-  }
-
-  .cursor-blink {
-    animation: blink 1.1s step-start infinite;
-    display: inline-block;
   }
 
   /* Bottom fade */
@@ -392,6 +178,7 @@ const productsLink = lang === "es" ? "/es/products" : "/products";
     position: absolute;
     bottom: 0;
     inset-inline: 0;
+    z-index: 1;
     height: 5rem;
     background: linear-gradient(to bottom, transparent, hsl(var(--background)));
     pointer-events: none;

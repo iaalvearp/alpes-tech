@@ -1,0 +1,7 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(cd /home/alpes-z/Documents/projects/alpestech-web && npm run build 2>&1 | tail -40 || true)"
+    ]
+  }
+}

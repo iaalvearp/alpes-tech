@@ -1,0 +1,35 @@
+---
+/**
+ * TiltCard.astro — Card con efecto 3D Tilt + Holographic Shine.
+ * El movimiento/destello lo activa el script global en Layout.astro (.tilt-card).
+ * Reutiliza la clase global `.card` (glassmorphism + bordes existentes).
+ */
+interface Props {
+  href?: string;
+  class?: string;
+  ariaLabel?: string;
+}
+
+const { href, class: className, ariaLabel } = Astro.props;
+const Tag = href ? "a" : "article";
+---
+
+<Tag
+  href={href}
+  class:list={["card", "tilt-card", className]}
+  aria-label={ariaLabel}
+  data-tilt
+>
+  <span class="tilt-card__shine" aria-hidden="true"></span>
+  <div class="tilt-card__content">
+    <slot />
+  </div>
+</Tag>
+
+<style>
+  .tilt-card {
+    display: block;
+    text-decoration: none;
+    color: inherit;
+  }
+</style>

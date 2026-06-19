@@ -5,7 +5,6 @@ import Footer from "../../components/navigation/Footer.astro";
 import AboutSection from "../../components/sections/AboutSection.astro";
 import SectionHeading from "../../components/ui/SectionHeading.astro";
 import CTAButton from "../../components/ui/CTAButton.astro";
-import { site } from "../../data/site";
 ---
 
 <Layout
@@ -69,8 +68,7 @@ import { site } from "../../data/site";
             Conoce nuestros productos o ponte en contacto con nosotros. Siempre estamos felices de conectarnos con la comunidad de desarrolladores.
           </p>
           <div class="cta-actions">
-            <CTAButton href="/es/products" id="about-bottom-cta-products">Ver nuestros productos</CTAButton>
-            <CTAButton href={site.github} variant="secondary" target="_blank" id="about-bottom-cta-github">GitHub ↗</CTAButton>
+            <CTAButton href="/es/products" id="about-bottom-cta-products">Ver productos</CTAButton>
           </div>
         </div>
       </div>

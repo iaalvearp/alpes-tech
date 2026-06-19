@@ -179,6 +179,55 @@ img, svg {
   transform: translateY(-2px);
 }
 
+/* ── 3D Tilt + Holographic Shine ── */
+.tilt-card {
+  position: relative;
+  overflow: hidden;
+  transform-style: preserve-3d;
+  transition:
+    transform 200ms ease,
+    box-shadow var(--transition-base),
+    border-color var(--transition-base);
+  will-change: transform;
+}
+
+/* El tilt usa transform inline; evitamos el translateY del hover base */
+.tilt-card:hover {
+  transform: none;
+}
+
+.tilt-card__shine {
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  pointer-events: none;
+  opacity: 0;
+  z-index: 2;
+  transition: opacity 250ms ease;
+  background: radial-gradient(
+    circle at var(--mx, 50%) var(--my, 50%),
+    hsl(0 0% 100% / 0.28),
+    hsl(var(--primary) / 0.08) 30%,
+    transparent 55%
+  );
+}
+
+.tilt-card.is-tilting .tilt-card__shine,
+.tilt-card:hover .tilt-card__shine {
+  opacity: 1;
+}
+
+.tilt-card__content {
+  position: relative;
+  z-index: 1;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .tilt-card {
+    transition: box-shadow var(--transition-base), border-color var(--transition-base);
+  }
+}
+
 /* ── Botones ── */
 .btn {
   display: inline-flex;
@@ -232,6 +281,7 @@ img, svg {
   font-weight: 500;
   color: hsl(var(--primary));
   letter-spacing: 0.04em;
+  width: fit-content;
 }
 
 .eyebrow-dot {
@@ -261,6 +311,12 @@ img, svg {
 .section {
   padding-block: 5rem;
   position: relative;
+}
+
+/* Offset para anclas (navbar fijo de 4rem) */
+section[id],
+[data-anchor] {
+  scroll-margin-top: 5rem;
 }
 
 @media (min-width: 1024px) {

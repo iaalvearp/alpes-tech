@@ -1,0 +1,142 @@
+---
+import Layout from "../../layouts/Layout.astro";
+import Navbar from "../../components/navigation/Navbar.astro";
+import Footer from "../../components/navigation/Footer.astro";
+import SectionHeading from "../../components/ui/SectionHeading.astro";
+import CTAButton from "../../components/ui/CTAButton.astro";
+import ListCard from "../../components/ui/ListCard.astro";
+import { servicesEs } from "../../data/details";
+---
+
+<Layout
+  title="Servicios"
+  description="Servicios tecnológicos de Alpes Tech: desarrollo, comercialización, implementación, mantenimiento, licenciamiento, consultoría y capacitación."
+  lang="es"
+>
+  <Navbar lang="es" />
+
+  <main id="main-content" tabindex="-1">
+    <section class="page-header" aria-label="Cabecera de la página de servicios">
+      <div class="triangle-pattern page-header-pattern" aria-hidden="true"></div>
+      <div class="orb orb-primary page-header-orb" aria-hidden="true"></div>
+
+      <div class="container page-header-content animate-fade-up">
+        <SectionHeading
+          eyebrow="Servicios"
+          title="Servicios Tecnológicos"
+          subtitle="Desarrollo, comercialización, implementación, mantenimiento, licenciamiento, consultoría y capacitación: cubrimos todo el ciclo de vida de tu software."
+          as="h1"
+        />
+      </div>
+    </section>
+
+    <section class="section list-section" aria-label="Listado de servicios">
+      <div class="container list-container">
+        {servicesEs.map((service, i) => (
+          <ListCard item={service} index={i} />
+        ))}
+      </div>
+    </section>
+
+    <section class="section cta-section" aria-label="Llamado a la acción">
+      <div class="container cta-container">
+        <div class="cta-card glass">
+          <div class="cta-glow" aria-hidden="true"></div>
+          <h2 class="cta-title">¿Hablamos de tu proyecto?</h2>
+          <p class="cta-text">
+            Cuéntanos qué necesitas y diseñaremos el servicio que mejor se adapte
+            a tu equipo y a tus objetivos.
+          </p>
+          <div class="cta-actions">
+            <CTAButton href="/es/#contacto" id="servicios-cta-contact">Ponerse en Contacto</CTAButton>
+          </div>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <Footer lang="es" />
+</Layout>
+
+<style>
+  .page-header {
+    position: relative;
+    overflow: hidden;
+    padding-top: 8rem;
+    padding-bottom: 4rem;
+    background: var(--gradient-hero);
+  }
+
+  .page-header-pattern {
+    position: absolute;
+    inset: 0;
+    opacity: 0.15;
+    pointer-events: none;
+  }
+
+  .page-header-orb {
+    width: 500px;
+    height: 500px;
+    top: -150px;
+    right: -100px;
+    opacity: 0.18;
+    pointer-events: none;
+  }
+
+  .page-header-content {
+    position: relative;
+    z-index: 1;
+  }
+
+  .list-container {
+    display: flex;
+    flex-direction: column;
+    gap: 2rem;
+  }
+
+  .cta-container {
+    max-width: 720px;
+  }
+
+  .cta-card {
+    position: relative;
+    padding: 3rem 2.5rem;
+    border-radius: calc(var(--radius) * 1.5);
+    text-align: center;
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 1.25rem;
+  }
+
+  .cta-glow {
+    position: absolute;
+    top: 0;
+    inset-inline: 0;
+    height: 1px;
+    background: linear-gradient(90deg, transparent, hsl(var(--primary) / 0.6), transparent);
+  }
+
+  .cta-title {
+    font-family: 'Space Grotesk', sans-serif;
+    font-size: clamp(1.5rem, 3vw, 2rem);
+    font-weight: 700;
+    color: hsl(var(--foreground));
+  }
+
+  .cta-text {
+    font-size: 0.95rem;
+    color: hsl(var(--muted-foreground));
+    line-height: 1.65;
+    max-width: 460px;
+  }
+
+  .cta-actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.875rem;
+    justify-content: center;
+    margin-top: 0.5rem;
+  }
+</style>

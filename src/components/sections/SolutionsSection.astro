@@ -1,0 +1,122 @@
+---
+import SectionHeading from "../ui/SectionHeading.astro";
+import CTAButton from "../ui/CTAButton.astro";
+import TiltCard from "../ui/TiltCard.astro";
+import { getItems } from "../../data/details";
+
+interface Props {
+  lang?: "en" | "es";
+  showCta?: boolean;
+  hideHeading?: boolean;
+}
+
+const { lang = "en", showCta = true, hideHeading = false } = Astro.props;
+
+const solutions = getItems("solutions", lang);
+
+const eyebrow = lang === "en" ? "Solutions" : "Soluciones";
+const title =
+  lang === "en" ? "Technology Solutions" : "Soluciones Tecnológicas";
+const subtitle =
+  lang === "en"
+    ? "We create, publish and commercially exploit digital solutions across platforms."
+    : "Creamos, publicamos y explotamos comercialmente soluciones digitales en múltiples plataformas.";
+
+const ctaLabel = lang === "en" ? "View all solutions" : "Ver todas las soluciones";
+const ctaHref = lang === "es" ? "/es/soluciones" : "/solutions";
+---
+
+<section
+  id="soluciones"
+  class="section solutions-section"
+  aria-labelledby="solutions-heading"
+>
+  <div class="triangle-pattern solutions-pattern" aria-hidden="true"></div>
+
+  <div class="container solutions-container">
+    {
+      !hideHeading && (
+        <div class="section-header">
+          <SectionHeading eyebrow={eyebrow} title={title} subtitle={subtitle} />
+        </div>
+      )
+    }
+
+    <div class="feature-grid" role="list" aria-label="Solutions">
+      {
+        solutions.map((solution) => (
+          <TiltCard
+            class="solution-card"
+            ariaLabel={solution.cardTitle}
+          >
+            <div class="solution-icon" aria-hidden="true">
+              {solution.icon}
+            </div>
+            <h3 class="solution-title">{solution.cardTitle}</h3>
+            <p class="solution-desc">{solution.cardDescription}</p>
+          </TiltCard>
+        ))
+      }
+    </div>
+
+    {
+      showCta && (
+        <div class="solutions-cta">
+          <CTAButton href={ctaHref} id="solutions-view-all">
+            {ctaLabel}
+          </CTAButton>
+        </div>
+      )
+    }
+  </div>
+</section>
+
+<style>
+  .solutions-section {
+    position: relative;
+    overflow: hidden;
+  }
+
+  .solutions-pattern {
+    position: absolute;
+    inset: 0;
+    opacity: 0.08;
+    pointer-events: none;
+  }
+
+  .solutions-container {
+    position: relative;
+    z-index: 1;
+  }
+
+  .solution-card {
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem;
+  }
+
+  .solution-icon {
+    font-size: 1.75rem;
+    line-height: 1;
+  }
+
+  .solution-title {
+    font-family: "Space Grotesk", sans-serif;
+    font-size: 1.05rem;
+    font-weight: 600;
+    color: hsl(var(--foreground));
+  }
+
+  .solution-desc {
+    font-size: 0.875rem;
+    color: hsl(var(--muted-foreground));
+    line-height: 1.65;
+    flex: 1;
+  }
+
+  .solutions-cta {
+    display: flex;
+    justify-content: center;
+    margin-top: 2.5rem;
+  }
+</style>

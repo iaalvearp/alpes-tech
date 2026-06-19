@@ -1,0 +1,180 @@
+---
+/**
+ * DetailView.astro — Estructura obligatoria de las páginas "Ver más":
+ *  1) Imagen hero (placeholder) con el prompt de IA en un comentario HTML.
+ *  2) Título principal.
+ *  3) 3–4 puntos comerciales (bullets).
+ * Reutiliza Navbar, Footer, SectionHeading y CTAButton.
+ */
+import Layout from "../../layouts/Layout.astro";
+import Navbar from "../navigation/Navbar.astro";
+import Footer from "../navigation/Footer.astro";
+import SectionHeading from "../ui/SectionHeading.astro";
+import CTAButton from "../ui/CTAButton.astro";
+import type { DetailItem } from "../../data/details";
+
+interface Props {
+  item: DetailItem;
+  lang: "en" | "es";
+  overviewHref: string;
+  overviewLabel: string;
+}
+
+const { item, lang, overviewHref, overviewLabel } = Astro.props;
+
+const placeholderSrc = `https://placehold.co/1280x520/0d1117/7fd4f5/png?text=${encodeURIComponent(
+  item.title,
+)}`;
+
+const backLabel = lang === "en" ? `← ${overviewLabel}` : `← ${overviewLabel}`;
+const keyPointsLabel = lang === "en" ? "Why choose us" : "Por qué elegirnos";
+const contactLabel = lang === "en" ? "Get in Touch" : "Ponerse en Contacto";
+const contactHref = lang === "es" ? "/es/#contacto" : "/#contacto";
+
+const imageAlt = `${item.title} — Alpes Tech`;
+// Comentario HTML con el prompt exacto para generar la imagen con IA.
+const promptComment = `<!-- AI IMAGE PROMPT (genera o descarga esta imagen y reemplaza el placeholder): ${item.heroPrompt} -->`;
+---
+
+<Layout title={item.title} description={item.bullets[0]} lang={lang}>
+  <Navbar lang={lang} />
+
+  <main id="main-content" tabindex="-1">
+    <!-- ── Imagen Hero ── -->
+    <section class="detail-hero" aria-label={item.title}>
+      <div class="container detail-hero-inner animate-fade-up">
+        <a href={overviewHref} class="detail-back">{backLabel}</a>
+
+        <div class="detail-hero-media">
+          <Fragment set:html={promptComment} />
+          <img
+            src={placeholderSrc}
+            alt={imageAlt}
+            width="1280"
+            height="520"
+            loading="eager"
+            class="detail-hero-img"
+          />
+        </div>
+      </div>
+    </section>
+
+    <!-- ── Título + Bullets ── -->
+    <section class="section detail-body" aria-labelledby="detail-title">
+      <div class="container detail-body-inner">
+        <SectionHeading eyebrow={item.eyebrow} title={item.title} as="h1" align="left" />
+
+        <div class="detail-points">
+          <h2 class="detail-points-title">{keyPointsLabel}</h2>
+          <ul class="detail-bullets">
+            {
+              item.bullets.map((bullet) => (
+                <li class="detail-bullet">
+                  <span class="detail-bullet-icon" aria-hidden="true">
+                    ✦
+                  </span>
+                  <span>{bullet}</span>
+                </li>
+              ))
+            }
+          </ul>
+        </div>
+
+        <div class="detail-actions">
+          <CTAButton href={contactHref}>{contactLabel}</CTAButton>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <Footer lang={lang} />
+</Layout>
+
+<style>
+  .detail-hero {
+    padding-top: 6rem;
+    padding-bottom: 1rem;
+    background: var(--gradient-hero);
+  }
+
+  .detail-hero-inner {
+    display: flex;
+    flex-direction: column;
+    gap: 1.25rem;
+  }
+
+  .detail-back {
+    align-self: flex-start;
+    font-family: "JetBrains Mono", monospace;
+    font-size: 0.8rem;
+    color: hsl(var(--muted-foreground));
+    transition: color 200ms ease;
+  }
+
+  .detail-back:hover {
+    color: hsl(var(--primary));
+  }
+
+  .detail-hero-media {
+    position: relative;
+    border-radius: calc(var(--radius) * 1.5);
+    overflow: hidden;
+    border: 1px solid hsl(var(--border) / 0.5);
+    box-shadow: var(--shadow-soft);
+  }
+
+  .detail-hero-img {
+    width: 100%;
+    height: auto;
+    display: block;
+    object-fit: cover;
+  }
+
+  .detail-body {
+    padding-top: 2.5rem;
+  }
+
+  .detail-body-inner {
+    max-width: 760px;
+    display: flex;
+    flex-direction: column;
+    gap: 2rem;
+  }
+
+  .detail-points-title {
+    font-family: "Space Grotesk", sans-serif;
+    font-size: 1.25rem;
+    font-weight: 600;
+    color: hsl(var(--foreground));
+    margin-bottom: 1.25rem;
+  }
+
+  .detail-bullets {
+    list-style: none;
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+  }
+
+  .detail-bullet {
+    display: flex;
+    align-items: flex-start;
+    gap: 0.75rem;
+    font-size: 1.02rem;
+    line-height: 1.6;
+    color: hsl(var(--foreground) / 0.92);
+  }
+
+  .detail-bullet-icon {
+    color: hsl(var(--primary));
+    flex-shrink: 0;
+    margin-top: 0.15rem;
+  }
+
+  .detail-actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.875rem;
+    margin-top: 0.5rem;
+  }
+</style>

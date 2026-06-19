@@ -1,0 +1,142 @@
+---
+import Layout from "../layouts/Layout.astro";
+import Navbar from "../components/navigation/Navbar.astro";
+import Footer from "../components/navigation/Footer.astro";
+import SectionHeading from "../components/ui/SectionHeading.astro";
+import CTAButton from "../components/ui/CTAButton.astro";
+import ListCard from "../components/ui/ListCard.astro";
+import { servicesEn } from "../data/details";
+---
+
+<Layout
+  title="Services"
+  description="Alpes Tech technology services: development, commercialization, implementation, maintenance, licensing, consulting and training."
+  lang="en"
+>
+  <Navbar lang="en" />
+
+  <main id="main-content" tabindex="-1">
+    <section class="page-header" aria-label="Services page header">
+      <div class="triangle-pattern page-header-pattern" aria-hidden="true"></div>
+      <div class="orb orb-primary page-header-orb" aria-hidden="true"></div>
+
+      <div class="container page-header-content animate-fade-up">
+        <SectionHeading
+          eyebrow="Services"
+          title="Technology Services"
+          subtitle="Development, commercialization, implementation, maintenance, licensing, consulting and training — we cover the full life cycle of your software."
+          as="h1"
+        />
+      </div>
+    </section>
+
+    <section class="section list-section" aria-label="Services list">
+      <div class="container list-container">
+        {servicesEn.map((service, i) => (
+          <ListCard item={service} index={i} />
+        ))}
+      </div>
+    </section>
+
+    <section class="section cta-section" aria-label="Call to action">
+      <div class="container cta-container">
+        <div class="cta-card glass">
+          <div class="cta-glow" aria-hidden="true"></div>
+          <h2 class="cta-title">Let's talk about your project</h2>
+          <p class="cta-text">
+            Tell us what you need and we'll design the service that best fits
+            your team and goals.
+          </p>
+          <div class="cta-actions">
+            <CTAButton href="/#contacto" id="services-cta-contact">Get in Touch</CTAButton>
+          </div>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <Footer lang="en" />
+</Layout>
+
+<style>
+  .page-header {
+    position: relative;
+    overflow: hidden;
+    padding-top: 8rem;
+    padding-bottom: 4rem;
+    background: var(--gradient-hero);
+  }
+
+  .page-header-pattern {
+    position: absolute;
+    inset: 0;
+    opacity: 0.15;
+    pointer-events: none;
+  }
+
+  .page-header-orb {
+    width: 500px;
+    height: 500px;
+    top: -150px;
+    right: -100px;
+    opacity: 0.18;
+    pointer-events: none;
+  }
+
+  .page-header-content {
+    position: relative;
+    z-index: 1;
+  }
+
+  .list-container {
+    display: flex;
+    flex-direction: column;
+    gap: 2rem;
+  }
+
+  .cta-container {
+    max-width: 720px;
+  }
+
+  .cta-card {
+    position: relative;
+    padding: 3rem 2.5rem;
+    border-radius: calc(var(--radius) * 1.5);
+    text-align: center;
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 1.25rem;
+  }
+
+  .cta-glow {
+    position: absolute;
+    top: 0;
+    inset-inline: 0;
+    height: 1px;
+    background: linear-gradient(90deg, transparent, hsl(var(--primary) / 0.6), transparent);
+  }
+
+  .cta-title {
+    font-family: 'Space Grotesk', sans-serif;
+    font-size: clamp(1.5rem, 3vw, 2rem);
+    font-weight: 700;
+    color: hsl(var(--foreground));
+  }
+
+  .cta-text {
+    font-size: 0.95rem;
+    color: hsl(var(--muted-foreground));
+    line-height: 1.65;
+    max-width: 460px;
+  }
+
+  .cta-actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.875rem;
+    justify-content: center;
+    margin-top: 0.5rem;
+  }
+</style>
