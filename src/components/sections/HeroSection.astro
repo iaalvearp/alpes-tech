@@ -64,28 +64,17 @@ const productsLink = lang === "es" ? "/es/products" : "/products";
       </div>
     </div>
   </div>
-
-  <!-- Bottom fade -->
-  <div class="hero-fade-bottom" aria-hidden="true"></div>
 </section>
 
 <style>
   .hero-section {
     position: relative;
-    overflow: hidden;
-    padding-top: 8rem;
-    padding-bottom: 5rem;
-    min-height: 90vh;
+    height: 100vh;
+    min-height: 600px;
     display: flex;
     align-items: center;
     justify-content: center;
-  }
-
-  @media (min-width: 1024px) {
-    .hero-section {
-      padding-top: 9rem;
-      padding-bottom: 6rem;
-    }
+    clip-path: polygon(100% 0, 100% 85%, 50% 100%, 0 85%, 0 0);
   }
 
   /* ── Video background ── */
@@ -106,12 +95,7 @@ const productsLink = lang === "es" ? "/es/products" : "/products";
   .hero-video-overlay {
     position: absolute;
     inset: 0;
-    background: linear-gradient(
-      180deg,
-      hsl(var(--background) / 0.7) 0%,
-      hsl(var(--background) / 0.5) 50%,
-      hsl(var(--background) / 0.85) 100%
-    );
+    background: hsl(var(--background) / 0.38);
   }
 
   /* ── Pattern overlay ── */
@@ -119,7 +103,7 @@ const productsLink = lang === "es" ? "/es/products" : "/products";
     position: absolute;
     inset: 0;
     z-index: 1;
-    opacity: 0.15;
+    opacity: 0.12;
     pointer-events: none;
   }
 
@@ -129,6 +113,7 @@ const productsLink = lang === "es" ? "/es/products" : "/products";
     z-index: 2;
     display: flex;
     justify-content: center;
+    padding-top: 4rem;
   }
 
   /* ── Content ── */
@@ -171,16 +156,5 @@ const productsLink = lang === "es" ? "/es/products" : "/products";
     gap: 0.875rem;
     justify-content: center;
     margin-top: 0.5rem;
-  }
-
-  /* Bottom fade */
-  .hero-fade-bottom {
-    position: absolute;
-    bottom: 0;
-    inset-inline: 0;
-    z-index: 1;
-    height: 5rem;
-    background: linear-gradient(to bottom, transparent, hsl(var(--background)));
-    pointer-events: none;
   }
 </style>
