@@ -23,7 +23,9 @@ const promptComment = `<!-- AI IMAGE PROMPT para ${item.cardTitle}: ${item.heroP
 ---
 
 <article class="list-card" aria-label={item.cardTitle}>
-  <div class:list={["list-card-inner", isReversed && "list-card-inner--reversed"]}>
+  <div
+    class:list={["list-card-inner", isReversed && "list-card-inner--reversed"]}
+  >
     <!-- Image side -->
     <div class="list-card-image-side">
       <Fragment set:html={promptComment} />
@@ -39,16 +41,19 @@ const promptComment = `<!-- AI IMAGE PROMPT para ${item.cardTitle}: ${item.heroP
 
     <!-- Content side -->
     <div class="list-card-content">
-      <div class="list-card-icon" aria-hidden="true">{item.icon}</div>
       <h3 class="list-card-title">{item.cardTitle}</h3>
       <p class="list-card-desc">{item.cardDescription}</p>
       <ul class="list-card-bullets">
-        {item.bullets.map((bullet) => (
-          <li class="list-card-bullet">
-            <span class="list-card-bullet-dot" aria-hidden="true">✦</span>
-            <span>{bullet}</span>
-          </li>
-        ))}
+        {
+          item.bullets.map((bullet) => (
+            <li class="list-card-bullet">
+              <span class="list-card-bullet-dot" aria-hidden="true">
+                ✦
+              </span>
+              <span>{bullet}</span>
+            </li>
+          ))
+        }
       </ul>
     </div>
   </div>
