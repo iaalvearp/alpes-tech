@@ -6,7 +6,6 @@
 
 export interface DetailItem {
   slug: string;
-  icon: string;
   /** Título corto y específico para la card (no repite el título de la sección). */
   cardTitle: string;
   /** Descripción breve para la card de la home. */
@@ -15,6 +14,10 @@ export interface DetailItem {
   title: string;
   /** Badge / eyebrow de la página de detalle. */
   eyebrow: string;
+  /** Ruta a la imagen dentro de public/ (ej: /servicios/desarrollo.webp). */
+  image: string;
+  /** Texto alternativo descriptivo para la imagen. */
+  imageAlt: string;
   /** Prompt en inglés para generar/descargar la imagen hero con IA. */
   heroPrompt: string;
   /** 3 a 4 puntos comerciales y atractivos. */
@@ -28,12 +31,14 @@ export type Lang = "en" | "es";
 export const solutionsEs: DetailItem[] = [
   {
     slug: "aplicaciones-moviles",
-    icon: "📱",
     cardTitle: "Aplicaciones Móviles",
     cardDescription:
       "Apps nativas y multiplataforma construidas para rendimiento y alcance.",
     title: "Aplicaciones Móviles",
     eyebrow: "Soluciones",
+    image: "/soluciones/aplicaciones-moviles.webp",
+    imageAlt:
+      "Teléfono inteligente moderno flotando con interfaz de app vibrante, iluminación azul hielo, fondo azul marino oscuro, estilo glassmorphism, representación 3D",
     heroPrompt:
       "A sleek modern smartphone floating in mid air showing a vibrant mobile app interface, ice blue glowing accents, dark navy background, glassmorphism UI, soft studio lighting, high detail, 3D render",
     bullets: [
@@ -44,12 +49,14 @@ export const solutionsEs: DetailItem[] = [
   },
   {
     slug: "plataformas-web",
-    icon: "🌐",
     cardTitle: "Plataformas Web",
     cardDescription:
       "Plataformas y portales web escalables, diseñados para velocidad y gran experiencia.",
     title: "Plataformas Web",
     eyebrow: "Soluciones",
+    image: "/soluciones/plataformas-web.webp",
+    imageAlt:
+      "Panel de plataforma web futurista en pantalla flotante grande, visualizaciones de datos azul hielo, paneles glassmorphism, fondo azul marino oscuro, iluminación cinematográfica, representación 3D",
     heroPrompt:
       "A futuristic web platform dashboard displayed on a large floating screen, ice blue data visualizations, dark navy environment, glassmorphism panels, clean modern UI, cinematic lighting, 3D render",
     bullets: [
@@ -60,12 +67,14 @@ export const solutionsEs: DetailItem[] = [
   },
   {
     slug: "inteligencia-artificial",
-    icon: "🤖",
     cardTitle: "Inteligencia Artificial",
     cardDescription:
       "Soluciones inteligentes impulsadas por IA para automatizar y potenciar.",
     title: "Inteligencia Artificial",
     eyebrow: "Soluciones",
+    image: "/soluciones/inteligencia-artificial.webp",
+    imageAlt:
+      "Red neuronal abstracta y cerebro de IA brillantes hechos de partículas de luz azul hielo, fondo azul marino oscuro, tecnología futurista, flujos de datos holográficos, representación 3D",
     heroPrompt:
       "An abstract glowing neural network and AI brain made of ice blue light particles, dark navy background, futuristic technology, holographic data streams, high detail, 3D render",
     bullets: [
@@ -76,12 +85,14 @@ export const solutionsEs: DetailItem[] = [
   },
   {
     slug: "servicios-nube",
-    icon: "☁️",
     cardTitle: "Servicios en la Nube",
     cardDescription:
       "Infraestructura y servicios en la nube para desplegar, escalar y gestionar con confianza.",
     title: "Servicios en la Nube",
     eyebrow: "Soluciones",
+    image: "/soluciones/servicios-nube.webp",
+    imageAlt:
+      "Concepto de computación en la nube con nodos de servidor brillantes conectados por líneas de luz azul hielo, cielo azul marino oscuro, centro de datos futurista, glassmorphism, representación 3D",
     heroPrompt:
       "Cloud computing concept with floating glowing server nodes connected by ice blue light lines, dark navy sky, futuristic data center, glassmorphism, cinematic, 3D render",
     bullets: [
@@ -92,12 +103,14 @@ export const solutionsEs: DetailItem[] = [
   },
   {
     slug: "comercio-electronico",
-    icon: "🛒",
     cardTitle: "Comercio Electrónico",
     cardDescription:
       "Experiencias de comercio digital, desde la tienda hasta pagos y operaciones.",
     title: "Comercio Electrónico",
     eyebrow: "Soluciones",
+    image: "/soluciones/comercio-electronico.webp",
+    imageAlt:
+      "Experiencia de compra en línea moderna con tarjetas de producto flotantes e icono de carrito de compras brillante en luz azul hielo, fondo azul marino oscuro, glassmorphism, representación 3D",
     heroPrompt:
       "A modern e-commerce shopping experience concept, floating product cards and a glowing shopping cart icon with ice blue light, dark navy background, glassmorphism, clean commercial style, 3D render",
     bullets: [
@@ -112,12 +125,14 @@ export const solutionsEs: DetailItem[] = [
 export const solutionsEn: DetailItem[] = [
   {
     slug: "mobile-apps",
-    icon: "📱",
     cardTitle: "Mobile Apps",
     cardDescription:
       "Native and cross-platform mobile applications built for performance and reach.",
     title: "Mobile Apps",
     eyebrow: "Solutions",
+    image: "/solutions/mobile-apps.webp",
+    imageAlt:
+      "Sleek modern smartphone floating in mid air with vibrant mobile app interface, ice blue glowing accents, dark navy background, glassmorphism UI, soft studio lighting, 3D render",
     heroPrompt:
       "A sleek modern smartphone floating in mid air showing a vibrant mobile app interface, ice blue glowing accents, dark navy background, glassmorphism UI, soft studio lighting, high detail, 3D render",
     bullets: [
@@ -128,12 +143,14 @@ export const solutionsEn: DetailItem[] = [
   },
   {
     slug: "web-platforms",
-    icon: "🌐",
     cardTitle: "Web Platforms",
     cardDescription:
       "Scalable web platforms and portals designed for speed and great UX.",
     title: "Web Platforms",
     eyebrow: "Solutions",
+    image: "/solutions/web-platforms.webp",
+    imageAlt:
+      "Futuristic web platform dashboard on a large floating screen, ice blue data visualizations, dark navy environment, glassmorphism panels, clean modern UI, cinematic lighting, 3D render",
     heroPrompt:
       "A futuristic web platform dashboard displayed on a large floating screen, ice blue data visualizations, dark navy environment, glassmorphism panels, clean modern UI, cinematic lighting, 3D render",
     bullets: [
@@ -144,12 +161,14 @@ export const solutionsEn: DetailItem[] = [
   },
   {
     slug: "artificial-intelligence",
-    icon: "🤖",
     cardTitle: "Artificial Intelligence",
     cardDescription:
       "Intelligent solutions powered by artificial intelligence to automate and augment.",
     title: "Artificial Intelligence",
     eyebrow: "Solutions",
+    image: "/solutions/artificial-intelligence.webp",
+    imageAlt:
+      "Abstract glowing neural network and AI brain made of ice blue light particles, dark navy background, futuristic technology, holographic data streams, detailed 3D render",
     heroPrompt:
       "An abstract glowing neural network and AI brain made of ice blue light particles, dark navy background, futuristic technology, holographic data streams, high detail, 3D render",
     bullets: [
@@ -160,12 +179,14 @@ export const solutionsEn: DetailItem[] = [
   },
   {
     slug: "cloud-services",
-    icon: "☁️",
     cardTitle: "Cloud Services",
     cardDescription:
       "Cloud infrastructure and services to deploy, scale and manage with confidence.",
     title: "Cloud Services",
     eyebrow: "Solutions",
+    image: "/solutions/cloud-services.webp",
+    imageAlt:
+      "Cloud computing concept with floating glowing server nodes connected by ice blue light lines, dark navy sky, futuristic data center, glassmorphism, cinematic 3D render",
     heroPrompt:
       "Cloud computing concept with floating glowing server nodes connected by ice blue light lines, dark navy sky, futuristic data center, glassmorphism, cinematic, 3D render",
     bullets: [
@@ -176,12 +197,14 @@ export const solutionsEn: DetailItem[] = [
   },
   {
     slug: "e-commerce",
-    icon: "🛒",
     cardTitle: "E-Commerce",
     cardDescription:
       "Digital commerce experiences, from storefronts to payments and operations.",
     title: "E-Commerce",
     eyebrow: "Solutions",
+    image: "/solutions/e-commerce.webp",
+    imageAlt:
+      "Modern e-commerce shopping experience concept, floating product cards and glowing shopping cart icon with ice blue light, dark navy background, glassmorphism, commercial style, 3D render",
     heroPrompt:
       "A modern e-commerce shopping experience concept, floating product cards and a glowing shopping cart icon with ice blue light, dark navy background, glassmorphism, clean commercial style, 3D render",
     bullets: [
@@ -196,12 +219,14 @@ export const solutionsEn: DetailItem[] = [
 export const servicesEs: DetailItem[] = [
   {
     slug: "desarrollo",
-    icon: "⚙️",
     cardTitle: "Desarrollo",
     cardDescription:
       "Diseñamos y construimos software a medida, desde el prototipo hasta producción.",
     title: "Desarrollo de Software",
     eyebrow: "Servicios",
+    image: "/servicios/desarrollo.webp",
+    imageAlt:
+      "Espacio de trabajo de desarrollador con bloques de código brillantes flotando y un IDE moderno, acentos azul hielo, fondo azul marino oscuro, glassmorphism, iluminación cinematográfica, representación 3D",
     heroPrompt:
       "A developer workspace concept with floating glowing code blocks and a modern IDE, ice blue accents, dark navy background, glassmorphism, cinematic lighting, 3D render",
     bullets: [
@@ -212,12 +237,14 @@ export const servicesEs: DetailItem[] = [
   },
   {
     slug: "comercializacion",
-    icon: "📈",
     cardTitle: "Comercialización",
     cardDescription:
-      "Llevamos los productos de software al mercado con posicionamiento claro.",
+      "Convierte tu tecnología en ingresos con una estrategia comercial sólida.",
     title: "Comercialización",
     eyebrow: "Servicios",
+    image: "/servicios/comercializacion.webp",
+    imageAlt:
+      "Concepto de estrategia de salida al mercado con gráfico de crecimiento brillante ascendente y cohete de lanzamiento de producto, acentos azul hielo, fondo azul marino oscuro, glassmorphism, representación 3D",
     heroPrompt:
       "A go-to-market strategy concept with a rising glowing growth chart and a product launch rocket, ice blue accents, dark navy background, glassmorphism, 3D render",
     bullets: [
@@ -228,12 +255,14 @@ export const servicesEs: DetailItem[] = [
   },
   {
     slug: "implementacion",
-    icon: "🚀",
     cardTitle: "Implementación",
     cardDescription:
       "Despliegue e integración de soluciones en tus sistemas actuales.",
     title: "Implementación",
     eyebrow: "Servicios",
+    image: "/servicios/implementacion.webp",
+    imageAlt:
+      "Concepto de integración de sistemas con piezas de rompecabezas brillantes y engranajes conectados, luz azul hielo, fondo azul marino oscuro, glassmorphism, representación 3D",
     heroPrompt:
       "A systems integration concept with glowing puzzle pieces and connected gears, ice blue light, dark navy background, glassmorphism, 3D render",
     bullets: [
@@ -244,12 +273,14 @@ export const servicesEs: DetailItem[] = [
   },
   {
     slug: "mantenimiento",
-    icon: "🔧",
     cardTitle: "Mantenimiento",
     cardDescription:
-      "Soporte continuo, actualizaciones y mejoras que mantienen tu software saludable.",
+      "Tu software merece mantenerse en óptimas condiciones para seguir generando valor.",
     title: "Mantenimiento",
     eyebrow: "Servicios",
+    image: "/servicios/mantenimiento.webp",
+    imageAlt:
+      "Concepto de mantenimiento de software con escudo brillante e iconos de engranaje sobre un servidor, acentos azul hielo, fondo azul marino oscuro, glassmorphism, representación 3D",
     heroPrompt:
       "A software maintenance concept with a glowing shield and gear icons over a server, ice blue accents, dark navy background, glassmorphism, 3D render",
     bullets: [
@@ -260,12 +291,14 @@ export const servicesEs: DetailItem[] = [
   },
   {
     slug: "licenciamiento",
-    icon: "🔑",
     cardTitle: "Licenciamiento",
     cardDescription:
-      "Licenciamiento de software flexible adaptado a equipos y organizaciones.",
+      "Protege y rentabiliza tu software con esquemas de licencia flexibles.",
     title: "Licenciamiento",
     eyebrow: "Servicios",
+    image: "/servicios/licenciamiento.webp",
+    imageAlt:
+      "Concepto de licenciamiento de software con llave brillante y documentos de certificado, luz azul hielo, fondo azul marino oscuro, glassmorphism, representación 3D",
     heroPrompt:
       "A software licensing concept with a glowing key and certificate documents, ice blue light, dark navy background, glassmorphism, 3D render",
     bullets: [
@@ -276,12 +309,14 @@ export const servicesEs: DetailItem[] = [
   },
   {
     slug: "consultoria",
-    icon: "💡",
     cardTitle: "Consultoría",
     cardDescription:
-      "Acompañamiento técnico y estratégico para decisiones tecnológicas acertadas.",
+      "Te guiamos en cada decisión tecnológica para que tu negocio avance con rumbo claro.",
     title: "Consultoría",
     eyebrow: "Servicios",
+    image: "/servicios/consultoria.webp",
+    imageAlt:
+      "Concepto de consultoría tecnológica con hoja de ruta brillante y holograma de estrategia sobre un escritorio, acentos azul hielo, fondo azul marino oscuro, glassmorphism, representación 3D",
     heroPrompt:
       "A technology consulting concept with a glowing roadmap and strategy hologram over a desk, ice blue accents, dark navy background, glassmorphism, 3D render",
     bullets: [
@@ -292,12 +327,14 @@ export const servicesEs: DetailItem[] = [
   },
   {
     slug: "capacitacion",
-    icon: "🎓",
     cardTitle: "Capacitación",
     cardDescription:
-      "Capacitación práctica para que tu equipo aproveche al máximo cada herramienta.",
+      "Formamos a tu equipo para que domine la tecnología y potencie tu negocio.",
     title: "Capacitación",
     eyebrow: "Servicios",
+    image: "/servicios/capacitacion.webp",
+    imageAlt:
+      "Concepto de capacitación tecnológica con birrete brillante y pantallas de aprendizaje flotantes, luz azul hielo, fondo azul marino oscuro, glassmorphism, representación 3D",
     heroPrompt:
       "A tech training concept with a glowing graduation cap and floating learning screens, ice blue light, dark navy background, glassmorphism, 3D render",
     bullets: [
@@ -312,12 +349,14 @@ export const servicesEs: DetailItem[] = [
 export const servicesEn: DetailItem[] = [
   {
     slug: "development",
-    icon: "⚙️",
     cardTitle: "Development",
     cardDescription:
       "We design and build custom software, from first prototype to production.",
     title: "Software Development",
     eyebrow: "Services",
+    image: "/services/development.webp",
+    imageAlt:
+      "Developer workspace concept with floating glowing code blocks and a modern IDE, ice blue accents, dark navy background, glassmorphism, cinematic lighting, 3D render",
     heroPrompt:
       "A developer workspace concept with floating glowing code blocks and a modern IDE, ice blue accents, dark navy background, glassmorphism, cinematic lighting, 3D render",
     bullets: [
@@ -328,12 +367,14 @@ export const servicesEn: DetailItem[] = [
   },
   {
     slug: "commercialization",
-    icon: "📈",
     cardTitle: "Commercialization",
     cardDescription:
-      "We bring software products to market with clear positioning.",
+      "Turn your technology into revenue with a solid go-to-market strategy.",
     title: "Commercialization",
     eyebrow: "Services",
+    image: "/services/commercialization.webp",
+    imageAlt:
+      "Go-to-market strategy concept with a rising glowing growth chart and a product launch rocket, ice blue accents, dark navy background, glassmorphism, 3D render",
     heroPrompt:
       "A go-to-market strategy concept with a rising glowing growth chart and a product launch rocket, ice blue accents, dark navy background, glassmorphism, 3D render",
     bullets: [
@@ -344,12 +385,14 @@ export const servicesEn: DetailItem[] = [
   },
   {
     slug: "implementation",
-    icon: "🚀",
     cardTitle: "Implementation",
     cardDescription:
       "Deployment and integration of solutions into your existing systems.",
     title: "Implementation",
     eyebrow: "Services",
+    image: "/services/implementation.webp",
+    imageAlt:
+      "Systems integration concept with glowing puzzle pieces and connected gears, ice blue light, dark navy background, glassmorphism, 3D render",
     heroPrompt:
       "A systems integration concept with glowing puzzle pieces and connected gears, ice blue light, dark navy background, glassmorphism, 3D render",
     bullets: [
@@ -360,12 +403,14 @@ export const servicesEn: DetailItem[] = [
   },
   {
     slug: "maintenance",
-    icon: "🔧",
     cardTitle: "Maintenance",
     cardDescription:
-      "Ongoing support, updates and improvements that keep your software healthy.",
+      "Your software deserves to stay in peak condition to keep delivering value.",
     title: "Maintenance",
     eyebrow: "Services",
+    image: "/services/maintenance.webp",
+    imageAlt:
+      "Software maintenance concept with a glowing shield and gear icons over a server, ice blue accents, dark navy background, glassmorphism, 3D render",
     heroPrompt:
       "A software maintenance concept with a glowing shield and gear icons over a server, ice blue accents, dark navy background, glassmorphism, 3D render",
     bullets: [
@@ -376,12 +421,14 @@ export const servicesEn: DetailItem[] = [
   },
   {
     slug: "licensing",
-    icon: "🔑",
     cardTitle: "Licensing",
     cardDescription:
-      "Flexible software licensing tailored to teams and organizations.",
+      "Protect and monetize your software with flexible licensing schemes.",
     title: "Licensing",
     eyebrow: "Services",
+    image: "/services/licensing.webp",
+    imageAlt:
+      "Software licensing concept with a glowing key and certificate documents, ice blue light, dark navy background, glassmorphism, 3D render",
     heroPrompt:
       "A software licensing concept with a glowing key and certificate documents, ice blue light, dark navy background, glassmorphism, 3D render",
     bullets: [
@@ -392,12 +439,14 @@ export const servicesEn: DetailItem[] = [
   },
   {
     slug: "consulting",
-    icon: "💡",
     cardTitle: "Consulting",
     cardDescription:
-      "Technical and strategic guidance to make the right technology decisions.",
+      "We guide you through every technology decision with clarity and expertise.",
     title: "Consulting",
     eyebrow: "Services",
+    image: "/services/consulting.webp",
+    imageAlt:
+      "Technology consulting concept with a glowing roadmap and strategy hologram over a desk, ice blue accents, dark navy background, glassmorphism, 3D render",
     heroPrompt:
       "A technology consulting concept with a glowing roadmap and strategy hologram over a desk, ice blue accents, dark navy background, glassmorphism, 3D render",
     bullets: [
@@ -408,12 +457,14 @@ export const servicesEn: DetailItem[] = [
   },
   {
     slug: "training",
-    icon: "🎓",
     cardTitle: "Training",
     cardDescription:
-      "Hands-on capacitation so your team gets the most out of every tool.",
+      "We train your team to master technology and drive your business forward.",
     title: "Training",
     eyebrow: "Services",
+    image: "/services/training.webp",
+    imageAlt:
+      "Tech training concept with a glowing graduation cap and floating learning screens, ice blue light, dark navy background, glassmorphism, 3D render",
     heroPrompt:
       "A tech training concept with a glowing graduation cap and floating learning screens, ice blue light, dark navy background, glassmorphism, 3D render",
     bullets: [

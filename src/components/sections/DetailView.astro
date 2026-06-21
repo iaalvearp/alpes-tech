@@ -22,16 +22,11 @@ interface Props {
 
 const { item, lang, overviewHref, overviewLabel } = Astro.props;
 
-const placeholderSrc = `https://placehold.co/1280x520/0d1117/7fd4f5/png?text=${encodeURIComponent(
-  item.title,
-)}`;
-
 const backLabel = lang === "en" ? `← ${overviewLabel}` : `← ${overviewLabel}`;
 const keyPointsLabel = lang === "en" ? "Why choose us" : "Por qué elegirnos";
 const contactLabel = lang === "en" ? "Get in Touch" : "Ponerse en Contacto";
 const contactHref = lang === "es" ? "/es/#contacto" : "/#contacto";
 
-const imageAlt = `${item.title} — Alpes Tech`;
 // Comentario HTML con el prompt exacto para generar la imagen con IA.
 const promptComment = `<!-- AI IMAGE PROMPT (genera o descarga esta imagen y reemplaza el placeholder): ${item.heroPrompt} -->`;
 ---
@@ -48,8 +43,8 @@ const promptComment = `<!-- AI IMAGE PROMPT (genera o descarga esta imagen y ree
         <div class="detail-hero-media">
           <Fragment set:html={promptComment} />
           <img
-            src={placeholderSrc}
-            alt={imageAlt}
+            src={item.image}
+            alt={item.imageAlt}
             width="1280"
             height="520"
             loading="eager"

@@ -49,9 +49,6 @@ const ctaHref = lang === "es" ? "/es/soluciones" : "/solutions";
             class="solution-card"
             ariaLabel={solution.cardTitle}
           >
-            <div class="solution-icon" aria-hidden="true">
-              {solution.icon}
-            </div>
             <h3 class="solution-title">{solution.cardTitle}</h3>
             <p class="solution-desc">{solution.cardDescription}</p>
           </TiltCard>
@@ -95,10 +92,7 @@ const ctaHref = lang === "es" ? "/es/soluciones" : "/solutions";
     gap: 0.75rem;
   }
 
-  .solution-icon {
-    font-size: 1.75rem;
-    line-height: 1;
-  }
+
 
   .solution-title {
     font-family: "Space Grotesk", sans-serif;

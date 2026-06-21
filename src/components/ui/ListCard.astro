@@ -14,11 +14,6 @@ interface Props {
 const { item, index } = Astro.props;
 const isReversed = index % 2 !== 0;
 
-const placeholderSrc = `https://placehold.co/640x400/0d1117/7fd4f5/png?text=${encodeURIComponent(
-  item.cardTitle,
-)}`;
-
-const imageAlt = `${item.cardTitle} — Alpes Tech`;
 const promptComment = `<!-- AI IMAGE PROMPT para ${item.cardTitle}: ${item.heroPrompt} -->`;
 ---
 
@@ -30,8 +25,8 @@ const promptComment = `<!-- AI IMAGE PROMPT para ${item.cardTitle}: ${item.heroP
     <div class="list-card-image-side">
       <Fragment set:html={promptComment} />
       <img
-        src={placeholderSrc}
-        alt={imageAlt}
+        src={item.image}
+        alt={item.imageAlt}
         width="640"
         height="400"
         loading="lazy"
@@ -115,6 +110,16 @@ const promptComment = `<!-- AI IMAGE PROMPT para ${item.cardTitle}: ${item.heroP
     height: 100%;
     object-fit: cover;
     display: block;
+    opacity: 0.4;
+    transform: scale(1);
+    transition:
+      opacity 400ms ease,
+      transform 400ms ease;
+  }
+
+  .list-card:hover .list-card-img {
+    opacity: 1;
+    transform: scale(1.1);
   }
 
   /* Content */
