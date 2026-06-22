@@ -1,46 +1,71 @@
-# Astro Starter Kit: Basics
+# Alpes Tech
 
-```sh
-pnpm create astro@latest -- --template basics
+Sitio web corporativo de **Alpes Tech**, empresa de tecnología enfocada en el desarrollo de software, soluciones de inteligencia artificial, servicios en la nube y aplicaciones móviles para empresas, agencias y profesionales en Ecuador y Latinoamérica.
+
+## ¿Qué hacemos?
+
+En Alpes Tech acompañamos el ciclo completo del software: diseño, desarrollo a medida, implementación, mantenimiento, licenciamiento, consultoría y capacitación. También desarrollamos productos propios como **AlPy Script**, un IDE de Python para Android.
+
+### Servicios principales
+- Desarrollo de software a medida
+- Soluciones de Inteligencia Artificial
+- Servicios e infraestructura en la nube
+- Aplicaciones móviles nativas y multiplataforma
+- Plataformas y portales web escalables
+- Implementación, integración y mantenimiento
+- Consultoría técnica y capacitación
+
+### Productos
+- **AlPy Script** — IDE de Python para Android. [alpy.alpestech.uk](https://alpy.alpestech.uk)
+- **Plantillas para Bodas** — Sitios de invitación personalizados (próximamente)
+
+---
+
+## Stack Tecnológico
+- [Astro](https://astro.build) — Framework principal
+- Tailwind CSS + CSS puro (scoped styles)
+- TypeScript
+- Sitio bilingüe (ES / EN)
+- Despliegue en Cloudflare
+
+## Estructura del Proyecto
+```
+src/
+├── components/
+│   ├── cards/
+│   ├── sections/
+│   └── ui/
+├── data/
+├── layouts/
+├── pages/
+│   ├── index.astro
+│   ├── products.astro
+│   ├── services/
+│   ├── solutions/
+│   └── es/
+│       ├── index.astro
+│       ├── products.astro
+│       ├── servicios/
+│       └── soluciones/
+└── styles/
+
+public/
+└── ...
 ```
 
-> 🧑‍🚀 **Seasoned astronaut?** Delete this file. Have fun!
+El sitio estará disponible en http://alpestech.uk.
 
-## 🚀 Project Structure
+### Idiomas
+- 🇬🇧 Inglés → /
+- 🇪🇸 Español → /es/
 
-Inside of your Astro project, you'll see the following folders and files:
+© Alpes Tech. Todos los derechos reservados.
 
-```text
-/
-├── public/
-│   └── favicon.svg
-├── src
-│   ├── assets
-│   │   └── astro.svg
-│   ├── components
-│   │   └── Welcome.astro
-│   ├── layouts
-│   │   └── Layout.astro
-│   └── pages
-│       └── index.astro
-└── package.json
-```
+### SEO
+El sitio incluye optimizaciones para posicionamiento en torno a los temas principales de Alpes Tech: Inteligencia artificial, Desarrollo de software, Servicios en la nube, Aplicaciones móviles, Python, Soluciones tecnológicas en Ecuador y Latinoamérica.
 
-To learn more about the folder structure of an Astro project, refer to [our guide on project structure](https://docs.astro.build/en/basics/project-structure/).
-
-## 🧞 Commands
-
-All commands are run from the root of the project, from a terminal:
-
-| Command                   | Action                                           |
-| :------------------------ | :----------------------------------------------- |
-| `pnpm install`             | Installs dependencies                            |
-| `pnpm dev`             | Starts local dev server at `localhost:4321`      |
-| `pnpm build`           | Build your production site to `./dist/`          |
-| `pnpm preview`         | Preview your build locally, before deploying     |
-| `pnpm astro ...`       | Run CLI commands like `astro add`, `astro check` |
-| `pnpm astro -- --help` | Get help using the Astro CLI                     |
-
-## 👀 Want to learn more?
-
-Feel free to check [our documentation](https://docs.astro.build) or jump into our [Discord server](https://astro.build/chat).
+### Notas de mantenimiento
+- Mantener un solo sistema de navegación, layout y footer para toda la web corporativa.
+- Evitar duplicar productos externos como páginas internas completas si ya tienen sitio propio.
+- Mantener /products y /es/products como catálogo simple de productos.
+- Revisar pnpm build antes de desplegar cambios.
