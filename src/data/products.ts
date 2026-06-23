@@ -25,7 +25,7 @@ export const productsEn: Product[] = [
     description:
       "A full-featured Python development environment built for Android. Write, run, and learn Python anywhere—no laptop required.",
     tags: ["Python", "Android", "IDE", "Mobile Dev"],
-    url: "https://alpy.iaalvearp.workers.dev/",
+    url: "https://alpy.alpestech.uk/",
     status: "active",
     icon: "🐍",
     bullets: ["Write.", "Run.", "Learn.", "Anywhere."],
@@ -59,7 +59,8 @@ export const productsEs: Product[] = [
   {
     id: "wedding-templates",
     name: "Plantillas para Bodas",
-    tagline: "Sitios web de invitación y plantillas para eventos personalizadas.",
+    tagline:
+      "Sitios web de invitación y plantillas para eventos personalizadas.",
     description:
       "Sitios web de invitación y plantillas para eventos personalizadas. Próximamente.",
     tags: ["Plantillas", "Bodas", "Sitios Web"],
