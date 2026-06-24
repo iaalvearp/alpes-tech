@@ -20,7 +20,9 @@ const siteData = site[lang];
 const defaultTitle = site.name;
 const defaultDescription = siteData.description;
 
-const fullTitle = !title ? `${defaultTitle} — ${siteData.tagline}` : `${title} — ${defaultTitle}`;
+const fullTitle = !title
+  ? `${defaultTitle} — ${siteData.tagline}`
+  : `${title} — ${defaultTitle}`;
 const metaDescription = description || defaultDescription;
 ---
 
@@ -29,6 +31,9 @@ const metaDescription = description || defaultDescription;
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta property="og:title" content={fullTitle} />
+    <meta property="og:description" content={metaDescription} />
+    <meta property="og:image" content="public/favicon.ico" />
     <meta name="generator" content={Astro.generator} />
 
     <!-- Auto-detección de idioma del navegador (sin bucle: sessionStorage) -->
@@ -42,7 +47,11 @@ const metaDescription = description || defaultDescription;
           var path = window.location.pathname;
           // Solo redirige desde la home en inglés ("/") para evitar rutas inexistentes.
           var isEnglishRoot = path === "/" || path === "/index.html";
-          var lang = (navigator.language || navigator.userLanguage || "en").toLowerCase();
+          var lang = (
+            navigator.language ||
+            navigator.userLanguage ||
+            "en"
+          ).toLowerCase();
 
           if (isEnglishRoot && lang.indexOf("es") === 0) {
             window.location.replace("/es/");
@@ -59,15 +68,15 @@ const metaDescription = description || defaultDescription;
     <link rel="canonical" href={canonical} />
 
     <!-- Open Graph -->
-    <meta property="og:type"        content="website" />
-    <meta property="og:url"         content={canonical} />
-    <meta property="og:title"       content={fullTitle} />
+    <meta property="og:type" content="website" />
+    <meta property="og:url" content={canonical} />
+    <meta property="og:title" content={fullTitle} />
     <meta property="og:description" content={metaDescription} />
-    <meta property="og:site_name"   content={site.name} />
+    <meta property="og:site_name" content={site.name} />
 
     <!-- Twitter Card -->
-    <meta name="twitter:card"        content="summary_large_image" />
-    <meta name="twitter:title"       content={fullTitle} />
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content={fullTitle} />
     <meta name="twitter:description" content={metaDescription} />
 
     <!-- Theme -->
@@ -89,8 +98,7 @@ const metaDescription = description || defaultDescription;
 
       if (!reduceMotion) {
         const MAX = 8; // grados máximos de inclinación
-        const cards =
-          document.querySelectorAll<HTMLElement>("[data-tilt]");
+        const cards = document.querySelectorAll<HTMLElement>("[data-tilt]");
 
         cards.forEach((card) => {
           let raf = 0;
