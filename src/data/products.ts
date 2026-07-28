@@ -31,14 +31,14 @@ export const productsEn: Product[] = [
     bullets: ["Write.", "Run.", "Learn.", "Anywhere."],
   },
   {
-    id: "wedding-templates",
-    name: "Wedding Templates",
-    tagline: "Custom wedding invitation websites and event templates.",
+    id: "alwed-invitations",
+    name: "AlWed Invitations",
+    tagline: "Digital wedding invitations for your special day.",
     description:
-      "Custom wedding invitation websites and event templates. Coming soon.",
-    tags: ["Templates", "Wedding", "Websites"],
+      "Create the perfect digital wedding invitation to share your story and make every guest feel special.",
+    tags: ["Wedding", "Invitations", "Websites"],
     url: "https://alwed.alpestech.uk/",
-    status: "coming-soon",
+    status: "active",
     icon: "💒",
   },
 ];
@@ -57,15 +57,14 @@ export const productsEs: Product[] = [
     bullets: ["Escribe.", "Ejecuta.", "Aprende.", "En cualquier lugar."],
   },
   {
-    id: "wedding-templates",
-    name: "Plantillas para Bodas",
-    tagline:
-      "Sitios web de invitación y plantillas para eventos personalizadas.",
+    id: "alwed-invitations",
+    name: "AlWed Invitaciones",
+    tagline: "Invitaciones digitales de boda para compartir tu historia.",
     description:
-      "Sitios web de invitación y plantillas para eventos personalizadas. Próximamente.",
-    tags: ["Plantillas", "Bodas", "Sitios Web"],
+      "Crea la invitación digital perfecta para compartir tu historia y hacer sentir especiales a tus invitados.",
+    tags: ["Bodas", "Invitaciones", "Sitios Web"],
     url: "https://alwed.alpestech.uk/",
-    status: "coming-soon",
+    status: "active",
     icon: "💒",
   },
 ];

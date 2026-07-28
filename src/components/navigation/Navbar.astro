@@ -13,6 +13,43 @@ const siteData = site[lang];
 // Aquí solo determinamos si estamos en la home para el estado inicial.
 const homePath = lang === "es" ? "/es/" : "/";
 const isHome = currentPath === homePath || currentPath === homePath.slice(0, -1);
+const isServicesPage =
+  lang === "es"
+    ? currentPath === "/es/servicios" || currentPath === "/es/servicios/"
+    : currentPath === "/services" || currentPath === "/services/";
+const isSolutionsPage =
+  lang === "es"
+    ? currentPath === "/es/soluciones" || currentPath === "/es/soluciones/"
+    : currentPath === "/solutions" || currentPath === "/solutions/";
+const isProductsPage =
+  lang === "es"
+    ? currentPath === "/es/products" || currentPath === "/es/products/"
+    : currentPath === "/products" || currentPath === "/products/";
+const productNavId = lang === "es" ? "nav-productos" : "nav-products";
+const initialActiveSection = isHome
+  ? "inicio"
+  : isServicesPage
+    ? "servicios"
+    : isSolutionsPage
+      ? "soluciones"
+      : isProductsPage
+        ? productNavId
+        : "";
+
+type NavLink = (typeof siteData.nav)[number];
+
+function isInitialActive(link: NavLink): boolean {
+  if (!initialActiveSection) return false;
+  return (
+    link.id === initialActiveSection ||
+    link.section === initialActiveSection
+  );
+}
+
+function getInitialAriaCurrent(link: NavLink): "page" | "location" | undefined {
+  if (!isInitialActive(link)) return undefined;
+  return isHome ? "location" : "page";
+}
 
 function getAlternateLangPath(): string {
   if (lang === "es") {
@@ -25,7 +62,12 @@ function getAlternateLangPath(): string {
 }
 ---
 
-<header id="site-navbar" role="banner">
+<header
+  id="site-navbar"
+  role="banner"
+  data-is-home={isHome ? "true" : "false"}
+  data-initial-active={initialActiveSection}
+>
   <div class="container nav-inner">
     <!-- Logo / Wordmark -->
     <a
@@ -49,11 +91,12 @@ function getAlternateLangPath(): string {
           <a
             href={link.href}
             id={link.id}
-            data-nav-section={link.section}
+            data-nav-section={link.section || link.id}
             class:list={[
               "nav-link",
-              { "nav-link--active": isHome && link.section === "inicio" },
+              { "nav-link--active": isInitialActive(link) },
             ]}
+            aria-current={getInitialAriaCurrent(link)}
           >
             {link.label}
           </a>
@@ -95,10 +138,10 @@ function getAlternateLangPath(): string {
         siteData.nav.map((link) => (
           <a
             href={link.href}
-            data-nav-section={link.section}
+            data-nav-section={link.section || link.id}
             class:list={[
               "mobile-nav-link",
-              { "mobile-nav-link--active": isHome && link.section === "inicio" },
+              { "mobile-nav-link--active": isInitialActive(link) },
             ]}
           >
             {link.label}
@@ -405,9 +448,33 @@ function getAlternateLangPath(): string {
   );
 
   // ── Active section highlight (Intersection Observer) ──
+  const navbarElement = document.getElementById("site-navbar");
+  const isHomePage = navbarElement?.dataset.isHome === "true";
+  const initialActive = navbarElement?.dataset.initialActive || "";
+  const desktopMedia = window.matchMedia("(min-width: 768px)");
   const navLinks = Array.from(
     document.querySelectorAll<HTMLAnchorElement>("[data-nav-section]"),
   );
+
+  function linkMatches(link: HTMLAnchorElement, id: string) {
+    return link.id === id || link.dataset.navSection === id;
+  }
+
+  function isVisibleNavigation(link: HTMLAnchorElement) {
+    return desktopMedia.matches
+      ? link.classList.contains("nav-link")
+      : link.classList.contains("mobile-nav-link");
+  }
+
+  function syncAriaCurrent(id: string | null, value: "page" | "location") {
+    navLinks.forEach((link) => {
+      if (id && linkMatches(link, id) && isVisibleNavigation(link)) {
+        link.setAttribute("aria-current", value);
+      } else {
+        link.removeAttribute("aria-current");
+      }
+    });
+  }
 
   if (navLinks.length) {
     const sectionIds = [
@@ -418,29 +485,64 @@ function getAlternateLangPath(): string {
       .map((id) => document.getElementById(id))
       .filter((el): el is HTMLElement => el !== null);
 
-    function setActive(id: string) {
+    function setActive(id: string | null) {
       navLinks.forEach((link) => {
-        const isMatch = link.dataset.navSection === id;
+        const isMatch = Boolean(id && linkMatches(link, id));
         link.classList.toggle("nav-link--active", isMatch && link.classList.contains("nav-link"));
         link.classList.toggle(
           "mobile-nav-link--active",
           isMatch && link.classList.contains("mobile-nav-link"),
         );
       });
+
+      if (isHomePage) {
+        syncAriaCurrent(id, "location");
+      }
     }
 
-    if (sections.length) {
+    navLinks.forEach((link) => {
+      const sectionId = link.dataset.navSection;
+      if (!sectionId) return;
+      link.addEventListener("click", () => {
+        if (isHomePage) setActive(sectionId);
+      });
+    });
+
+    if (isHomePage) {
+      setActive("inicio");
+    } else if (initialActive) {
+      syncAriaCurrent(initialActive, "page");
+    }
+
+    desktopMedia.addEventListener("change", () => {
+      const activeLink = navLinks.find((link) =>
+        link.classList.contains("nav-link--active") ||
+        link.classList.contains("mobile-nav-link--active"),
+      );
+      const activeId = activeLink?.dataset.navSection || initialActive || null;
+      if (activeId) {
+        syncAriaCurrent(activeId, isHomePage ? "location" : "page");
+      }
+    });
+
+    if (isHomePage && sections.length) {
+      const visibleSections = new Map<string, number>();
       const observer = new IntersectionObserver(
         (entries) => {
-          const visible = entries
-            .filter((e) => e.isIntersecting)
-            .sort((a, b) => b.intersectionRatio - a.intersectionRatio);
-          if (visible[0]?.target?.id) {
-            setActive(visible[0].target.id);
-          }
+          entries.forEach((entry) => {
+            if (entry.isIntersecting) {
+              visibleSections.set(entry.target.id, entry.intersectionRatio);
+            } else {
+              visibleSections.delete(entry.target.id);
+            }
+          });
+
+          const visible = [...visibleSections.entries()]
+            .sort((a, b) => b[1] - a[1]);
+          setActive(visible[0]?.[0] || null);
         },
         {
-          rootMargin: "-45% 0px -45% 0px",
+          rootMargin: "-30% 0px -55% 0px",
           threshold: [0, 0.25, 0.5, 0.75, 1],
         },
       );

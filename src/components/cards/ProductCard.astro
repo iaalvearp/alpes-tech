@@ -9,7 +9,8 @@ interface Props {
 const { product, lang = "en" } = Astro.props;
 const isComingSoon = product.status === "coming-soon";
 const isBeta = product.status === "beta";
-const hasUrl = Boolean(product.url);
+const isLinked = Boolean(product.url);
+const Tag = isLinked ? "a" : "article";
 
 const comingSoonText = lang === "en" ? "Coming Soon" : "Próximamente";
 const visitText =
@@ -18,7 +19,10 @@ const availableSoonText =
   lang === "en" ? "Available soon" : "Disponible pronto";
 ---
 
-<article
+<Tag
+  href={isLinked ? product.url : undefined}
+  target={isLinked ? "_blank" : undefined}
+  rel={isLinked ? "noopener noreferrer" : undefined}
   class:list={["product-card card", { "product-card--disabled": isComingSoon }]}
   aria-label={`Product: ${product.name}`}
 >
@@ -65,25 +69,16 @@ const availableSoonText =
   <!-- CTA -->
   <div class="product-cta">
     {
-      !isComingSoon || hasUrl ? (
-        <a
-          href={product.url}
-          class:list={[
-            !isComingSoon && "btn btn-primary product-btn",
-            isComingSoon && "product-btn-disabled",
-          ]}
-          target="_blank"
-          rel="noopener noreferrer"
-          aria-label={isComingSoon ? comingSoonText : visitText}
-        >
-          {isComingSoon ? comingSoonText : visitText}
-        </a>
+      !isComingSoon ? (
+        <span class="btn btn-primary product-btn">
+          {visitText}
+        </span>
       ) : (
         <span class="product-btn-disabled">{availableSoonText}</span>
       )
     }
   </div>
-</article>
+</Tag>
 
 <style>
   .product-card {
