@@ -1,7 +1,7 @@
 ---
 import SectionHeading from "../ui/SectionHeading.astro";
 import CTAButton from "../ui/CTAButton.astro";
-import TiltCard from "../ui/TiltCard.astro";
+import MediaCard from "../cards/MediaCard.astro";
 import { getItems } from "../../data/details";
 
 interface Props {
@@ -45,13 +45,12 @@ const ctaHref = lang === "es" ? "/es/soluciones" : "/solutions";
     <div class="feature-grid" role="list" aria-label="Solutions">
       {
         solutions.map((solution) => (
-          <TiltCard
-            class="solution-card"
-            ariaLabel={solution.cardTitle}
-          >
-            <h3 class="solution-title">{solution.cardTitle}</h3>
-            <p class="solution-desc">{solution.cardDescription}</p>
-          </TiltCard>
+          <MediaCard
+            image={solution.image}
+            imageAlt={solution.imageAlt}
+            title={solution.cardTitle}
+            description={solution.cardDescription}
+          />
         ))
       }
     </div>
@@ -84,28 +83,6 @@ const ctaHref = lang === "es" ? "/es/soluciones" : "/solutions";
   .solutions-container {
     position: relative;
     z-index: 1;
-  }
-
-  .solution-card {
-    display: flex;
-    flex-direction: column;
-    gap: 0.75rem;
-  }
-
-
-
-  .solution-title {
-    font-family: "Space Grotesk", sans-serif;
-    font-size: 1.05rem;
-    font-weight: 600;
-    color: hsl(var(--foreground));
-  }
-
-  .solution-desc {
-    font-size: 0.875rem;
-    color: hsl(var(--muted-foreground));
-    line-height: 1.65;
-    flex: 1;
   }
 
   .solutions-cta {

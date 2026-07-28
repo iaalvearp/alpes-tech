@@ -1,0 +1,205 @@
+---
+interface Props {
+  image: string;
+  imageAlt: string;
+  title: string;
+  description: string;
+  class?: string;
+  href?: string;
+}
+
+const {
+  image,
+  imageAlt,
+  title,
+  description,
+  class: className,
+  href,
+} = Astro.props;
+
+const Tag = href ? "a" : "article";
+---
+
+<Tag href={href} class:list={["media-card", className]}>
+  <img
+    src={image}
+    alt={imageAlt}
+    class="media-card__image"
+    loading="lazy"
+  />
+
+  <div class="media-card__glass" aria-hidden="true"></div>
+
+  <div class="media-card__content">
+    <h3 class="media-card__title">{title}</h3>
+    <p class="media-card__description">{description}</p>
+  </div>
+</Tag>
+
+<style>
+  .media-card {
+    --media-height-hover: 60%;
+
+    position: relative;
+    display: block;
+    height: 390px;
+    overflow: hidden;
+    color: inherit;
+    text-decoration: none;
+    border: 1px solid hsl(var(--border) / 0.65);
+    border-radius: calc(var(--radius) * 1.25);
+    background: hsl(var(--foreground));
+    box-shadow: var(--shadow-soft);
+  }
+
+  .media-card__image {
+    position: absolute;
+    inset: 0 0 auto;
+    z-index: 0;
+    display: block;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    object-position: center;
+    transition:
+      height 200ms ease-out,
+      object-position 200ms ease-out;
+  }
+
+  .media-card__glass {
+    position: absolute;
+    inset: 0;
+    z-index: 1;
+    pointer-events: none;
+    background:
+      linear-gradient(
+        135deg,
+        rgb(255 255 255 / 16%),
+        rgb(255 255 255 / 6%)
+      ),
+      hsl(var(--background) / 0.08);
+    -webkit-backdrop-filter: blur(8px) saturate(135%);
+    backdrop-filter: blur(8px) saturate(135%);
+    border: 1px solid rgb(255 255 255 / 24%);
+    border-radius: inherit;
+    box-shadow:
+      inset 0 1px 0 rgb(255 255 255 / 22%),
+      0 10px 30px rgb(0 0 0 / 18%);
+    opacity: 1;
+    transform: translateY(0);
+    transition:
+      transform 200ms ease-out,
+      opacity 200ms ease-out;
+  }
+
+  .media-card__content {
+    position: absolute;
+    inset: 0;
+    z-index: 2;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 0.6rem;
+    padding: 1.35rem 1.5rem;
+    text-align: center;
+    color: hsl(var(--foreground));
+    transition:
+      top 200ms ease-out,
+      color 200ms ease-out;
+  }
+
+  .media-card__title {
+    margin: 0;
+    font-family: "Space Grotesk", sans-serif;
+    font-size: 1.05rem;
+    font-weight: 700;
+    line-height: 1.2;
+    color: hsl(var(--foreground));
+    transition: color 200ms ease-out;
+  }
+
+  .media-card__description {
+    margin: 0;
+    font-size: 0.875rem;
+    font-weight: 400;
+    line-height: 1.55;
+    color: hsl(var(--foreground) / 0.9);
+    transition: color 200ms ease-out;
+  }
+
+  @media (min-width: 640px) {
+    .media-card {
+      height: 370px;
+    }
+  }
+
+  @media (min-width: 1024px) {
+    .media-card {
+      height: 360px;
+    }
+  }
+
+  @media (hover: hover) {
+    .media-card:hover .media-card__image,
+    .media-card:focus-visible .media-card__image {
+      height: var(--media-height-hover);
+      transition-duration: 350ms;
+      transition-timing-function: cubic-bezier(0.22, 1, 0.36, 1);
+    }
+
+    .media-card:hover .media-card__glass,
+    .media-card:focus-visible .media-card__glass {
+      opacity: 0;
+      transform: translateY(-100%);
+      transition-duration: 350ms;
+      transition-timing-function: cubic-bezier(0.22, 1, 0.36, 1);
+    }
+
+    .media-card:hover .media-card__content,
+    .media-card:focus-visible .media-card__content {
+      top: var(--media-height-hover);
+      bottom: 0;
+      justify-content: center;
+      padding: 0.85rem 1.15rem 1rem;
+      color: hsl(var(--primary-foreground));
+      transition-duration: 350ms;
+      transition-timing-function: cubic-bezier(0.22, 1, 0.36, 1);
+    }
+
+    .media-card:hover .media-card__title,
+    .media-card:focus-visible .media-card__title {
+      color: hsl(var(--primary-foreground));
+      color: color-mix(
+        in srgb,
+        hsl(var(--primary-foreground)) 82%,
+        hsl(var(--primary)) 18%
+      );
+      transition-duration: 350ms;
+      transition-timing-function: cubic-bezier(0.22, 1, 0.36, 1);
+    }
+
+    .media-card:hover .media-card__description,
+    .media-card:focus-visible .media-card__description {
+      color: hsl(var(--primary-foreground) / 0.72);
+      color: color-mix(
+        in srgb,
+        hsl(var(--primary-foreground)) 55%,
+        hsl(var(--primary)) 45%
+      );
+      transition-duration: 350ms;
+      transition-timing-function: cubic-bezier(0.22, 1, 0.36, 1);
+    }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .media-card__image,
+    .media-card__glass,
+    .media-card__content,
+    .media-card__title,
+    .media-card__description {
+      transition-duration: 1ms;
+      transition-timing-function: linear;
+    }
+  }
+</style>

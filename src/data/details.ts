@@ -130,7 +130,7 @@ export const solutionsEn: DetailItem[] = [
       "Native and cross-platform mobile applications built for performance and reach.",
     title: "Mobile Apps",
     eyebrow: "Solutions",
-    image: "/solutions/mobile-apps.webp",
+    image: "/soluciones/aplicaciones-moviles.webp",
     imageAlt:
       "Sleek modern smartphone floating in mid air with vibrant mobile app interface, ice blue glowing accents, dark navy background, glassmorphism UI, soft studio lighting, 3D render",
     heroPrompt:
@@ -148,7 +148,7 @@ export const solutionsEn: DetailItem[] = [
       "Scalable web platforms and portals designed for speed and great UX.",
     title: "Web Platforms",
     eyebrow: "Solutions",
-    image: "/solutions/web-platforms.webp",
+    image: "/soluciones/plataformas-web.webp",
     imageAlt:
       "Futuristic web platform dashboard on a large floating screen, ice blue data visualizations, dark navy environment, glassmorphism panels, clean modern UI, cinematic lighting, 3D render",
     heroPrompt:
@@ -166,7 +166,7 @@ export const solutionsEn: DetailItem[] = [
       "Intelligent solutions powered by artificial intelligence to automate and augment.",
     title: "Artificial Intelligence",
     eyebrow: "Solutions",
-    image: "/solutions/artificial-intelligence.webp",
+    image: "/soluciones/inteligencia-artificial.webp",
     imageAlt:
       "Abstract glowing neural network and AI brain made of ice blue light particles, dark navy background, futuristic technology, holographic data streams, detailed 3D render",
     heroPrompt:
@@ -184,7 +184,7 @@ export const solutionsEn: DetailItem[] = [
       "Cloud infrastructure and services to deploy, scale and manage with confidence.",
     title: "Cloud Services",
     eyebrow: "Solutions",
-    image: "/solutions/cloud-services.webp",
+    image: "/soluciones/servicios-nube.webp",
     imageAlt:
       "Cloud computing concept with floating glowing server nodes connected by ice blue light lines, dark navy sky, futuristic data center, glassmorphism, cinematic 3D render",
     heroPrompt:
@@ -202,7 +202,7 @@ export const solutionsEn: DetailItem[] = [
       "Digital commerce experiences, from storefronts to payments and operations.",
     title: "E-Commerce",
     eyebrow: "Solutions",
-    image: "/solutions/e-commerce.webp",
+    image: "/soluciones/comercio-electronico.webp",
     imageAlt:
       "Modern e-commerce shopping experience concept, floating product cards and glowing shopping cart icon with ice blue light, dark navy background, glassmorphism, commercial style, 3D render",
     heroPrompt:
@@ -354,7 +354,7 @@ export const servicesEn: DetailItem[] = [
       "We design and build custom software, from first prototype to production.",
     title: "Software Development",
     eyebrow: "Services",
-    image: "/services/development.webp",
+    image: "/servicios/desarrollo.webp",
     imageAlt:
       "Developer workspace concept with floating glowing code blocks and a modern IDE, ice blue accents, dark navy background, glassmorphism, cinematic lighting, 3D render",
     heroPrompt:
@@ -372,7 +372,7 @@ export const servicesEn: DetailItem[] = [
       "Turn your technology into revenue with a solid go-to-market strategy.",
     title: "Commercialization",
     eyebrow: "Services",
-    image: "/services/commercialization.webp",
+    image: "/servicios/comercializacion.webp",
     imageAlt:
       "Go-to-market strategy concept with a rising glowing growth chart and a product launch rocket, ice blue accents, dark navy background, glassmorphism, 3D render",
     heroPrompt:
@@ -390,7 +390,7 @@ export const servicesEn: DetailItem[] = [
       "Deployment and integration of solutions into your existing systems.",
     title: "Implementation",
     eyebrow: "Services",
-    image: "/services/implementation.webp",
+    image: "/servicios/implementacion.webp",
     imageAlt:
       "Systems integration concept with glowing puzzle pieces and connected gears, ice blue light, dark navy background, glassmorphism, 3D render",
     heroPrompt:
@@ -408,7 +408,7 @@ export const servicesEn: DetailItem[] = [
       "Your software deserves to stay in peak condition to keep delivering value.",
     title: "Maintenance",
     eyebrow: "Services",
-    image: "/services/maintenance.webp",
+    image: "/servicios/mantenimiento.webp",
     imageAlt:
       "Software maintenance concept with a glowing shield and gear icons over a server, ice blue accents, dark navy background, glassmorphism, 3D render",
     heroPrompt:
@@ -426,7 +426,7 @@ export const servicesEn: DetailItem[] = [
       "Protect and monetize your software with flexible licensing schemes.",
     title: "Licensing",
     eyebrow: "Services",
-    image: "/services/licensing.webp",
+    image: "/servicios/licenciamiento.webp",
     imageAlt:
       "Software licensing concept with a glowing key and certificate documents, ice blue light, dark navy background, glassmorphism, 3D render",
     heroPrompt:
@@ -444,7 +444,7 @@ export const servicesEn: DetailItem[] = [
       "We guide you through every technology decision with clarity and expertise.",
     title: "Consulting",
     eyebrow: "Services",
-    image: "/services/consulting.webp",
+    image: "/servicios/consultoria.webp",
     imageAlt:
       "Technology consulting concept with a glowing roadmap and strategy hologram over a desk, ice blue accents, dark navy background, glassmorphism, 3D render",
     heroPrompt:
@@ -462,7 +462,7 @@ export const servicesEn: DetailItem[] = [
       "We train your team to master technology and drive your business forward.",
     title: "Training",
     eyebrow: "Services",
-    image: "/services/training.webp",
+    image: "/servicios/capacitacion.webp",
     imageAlt:
       "Tech training concept with a glowing graduation cap and floating learning screens, ice blue light, dark navy background, glassmorphism, 3D render",
     heroPrompt:
