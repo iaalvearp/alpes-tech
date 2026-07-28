@@ -20,7 +20,11 @@ const {
 const Tag = href ? "a" : "article";
 ---
 
-<Tag href={href} class:list={["media-card", className]}>
+<Tag
+  href={href}
+  data-media-card={href ? "true" : undefined}
+  class:list={["media-card", className]}
+>
   <img
     src={image}
     alt={imageAlt}
@@ -192,6 +196,53 @@ const Tag = href ? "a" : "article";
     }
   }
 
+  @media (hover: none) and (pointer: coarse) {
+    .media-card.is-preview .media-card__image {
+      height: var(--media-height-hover);
+      transition-duration: 350ms;
+      transition-timing-function: cubic-bezier(0.22, 1, 0.36, 1);
+    }
+
+    .media-card.is-preview .media-card__glass {
+      opacity: 0;
+      transform: translateY(-100%);
+      transition-duration: 350ms;
+      transition-timing-function: cubic-bezier(0.22, 1, 0.36, 1);
+    }
+
+    .media-card.is-preview .media-card__content {
+      top: var(--media-height-hover);
+      bottom: 0;
+      justify-content: center;
+      padding: 0.85rem 1.15rem 1rem;
+      color: hsl(var(--primary-foreground));
+      transition-duration: 350ms;
+      transition-timing-function: cubic-bezier(0.22, 1, 0.36, 1);
+    }
+
+    .media-card.is-preview .media-card__title {
+      color: hsl(var(--primary-foreground));
+      color: color-mix(
+        in srgb,
+        hsl(var(--primary-foreground)) 82%,
+        hsl(var(--primary)) 18%
+      );
+      transition-duration: 350ms;
+      transition-timing-function: cubic-bezier(0.22, 1, 0.36, 1);
+    }
+
+    .media-card.is-preview .media-card__description {
+      color: hsl(var(--primary-foreground) / 0.72);
+      color: color-mix(
+        in srgb,
+        hsl(var(--primary-foreground)) 55%,
+        hsl(var(--primary)) 45%
+      );
+      transition-duration: 350ms;
+      transition-timing-function: cubic-bezier(0.22, 1, 0.36, 1);
+    }
+  }
+
   @media (prefers-reduced-motion: reduce) {
     .media-card__image,
     .media-card__glass,
@@ -203,3 +254,69 @@ const Tag = href ? "a" : "article";
     }
   }
 </style>
+
+<script>
+  const touchMedia = window.matchMedia("(hover: none) and (pointer: coarse)");
+  const mediaCards = Array.from(
+    document.querySelectorAll<HTMLAnchorElement>("[data-media-card][href]"),
+  );
+
+  function clearMediaCardPreview() {
+    mediaCards.forEach((card) => card.classList.remove("is-preview"));
+  }
+
+  function isModifiedClick(event: MouseEvent) {
+    return (
+      event.button !== 0 ||
+      event.metaKey ||
+      event.ctrlKey ||
+      event.shiftKey ||
+      event.altKey
+    );
+  }
+
+  function handleMediaCardClick(event: MouseEvent) {
+    if (!touchMedia.matches || event.detail === 0 || isModifiedClick(event)) {
+      return;
+    }
+
+    const card = event.currentTarget as HTMLAnchorElement;
+
+    if (card.classList.contains("is-preview")) {
+      return;
+    }
+
+    event.preventDefault();
+    clearMediaCardPreview();
+    card.classList.add("is-preview");
+  }
+
+  mediaCards.forEach((card) => {
+    card.addEventListener("click", handleMediaCardClick);
+  });
+
+  document.addEventListener("pointerdown", (event) => {
+    if (!touchMedia.matches) return;
+
+    const target = event.target;
+    if (target instanceof Node && mediaCards.some((card) => card.contains(target))) {
+      return;
+    }
+
+    clearMediaCardPreview();
+  });
+
+  document.addEventListener("keydown", (event) => {
+    if (event.key === "Escape") {
+      clearMediaCardPreview();
+    }
+  });
+
+  touchMedia.addEventListener("change", () => {
+    if (!touchMedia.matches) {
+      clearMediaCardPreview();
+    }
+  });
+
+  window.addEventListener("pageshow", clearMediaCardPreview);
+</script>

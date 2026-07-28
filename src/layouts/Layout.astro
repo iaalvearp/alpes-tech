@@ -35,13 +35,12 @@ const fullTitle = !title
   : `${title} — ${defaultTitle}`;
 const metaDescription = description || defaultDescription;
 
-// Fallback temporal: no existe todavía una imagen social panorámica de marca.
-// Debe sustituirse por /og-default.webp cuando se cree el recurso 1200x630.
-const defaultSocialImage = "/servicios/desarrollo.webp";
+// Imagen social predeterminada para páginas generales sin imagen propia.
+const defaultSocialImage = "/servicios/consultoria.webp";
 const defaultSocialImageAlt =
   lang === "es"
-    ? "Alpes Tech — desarrollo de software y tecnología"
-    : "Alpes Tech — software development and technology";
+    ? "Alpes Tech — consultoría tecnológica y transformación digital"
+    : "Alpes Tech — technology consulting and digital transformation";
 
 const canonicalUrl = new URL(canonical || Astro.url.pathname, Astro.site);
 const socialImagePath = socialImage || defaultSocialImage;
