@@ -9,6 +9,7 @@ interface Props {
 const { product, lang = "en" } = Astro.props;
 const isComingSoon = product.status === "coming-soon";
 const isBeta = product.status === "beta";
+const hasUrl = Boolean(product.url);
 
 const comingSoonText = lang === "en" ? "Coming Soon" : "Próximamente";
 const visitText =
@@ -64,15 +65,18 @@ const availableSoonText =
   <!-- CTA -->
   <div class="product-cta">
     {
-      !isComingSoon ? (
+      !isComingSoon || hasUrl ? (
         <a
           href={product.url}
-          class="btn btn-primary product-btn"
+          class:list={[
+            !isComingSoon && "btn btn-primary product-btn",
+            isComingSoon && "product-btn-disabled",
+          ]}
           target="_blank"
           rel="noopener noreferrer"
-          aria-label={visitText}
+          aria-label={isComingSoon ? comingSoonText : visitText}
         >
-          {visitText}
+          {isComingSoon ? comingSoonText : visitText}
         </a>
       ) : (
         <span class="product-btn-disabled">{availableSoonText}</span>

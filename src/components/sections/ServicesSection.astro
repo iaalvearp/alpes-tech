@@ -44,6 +44,11 @@ const ctaHref = lang === "es" ? "/es/servicios" : "/services";
             imageAlt={service.imageAlt}
             title={service.cardTitle}
             description={service.cardDescription}
+            href={
+              lang === "es"
+                ? `/es/servicios/${service.slug}/`
+                : `/services/${service.slug}/`
+            }
           />
         ))
       }

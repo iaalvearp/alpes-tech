@@ -31,7 +31,13 @@ const contactHref = lang === "es" ? "/es/#contacto" : "/#contacto";
 const promptComment = `<!-- AI IMAGE PROMPT (genera o descarga esta imagen y reemplaza el placeholder): ${item.heroPrompt} -->`;
 ---
 
-<Layout title={item.title} description={item.bullets[0]} lang={lang}>
+<Layout
+  title={item.title}
+  description={item.cardDescription}
+  socialImage={item.image}
+  socialImageAlt={item.imageAlt}
+  lang={lang}
+>
   <Navbar lang={lang} />
 
   <main id="main-content" tabindex="-1">

@@ -32,9 +32,13 @@ import { servicesEs } from "../../data/details";
 
     <section class="section list-section" aria-label="Listado de servicios">
       <div class="container list-container">
-        {servicesEs.map((service, i) => (
-          <ListCard item={service} index={i} />
-        ))}
+          {servicesEs.map((service, i) => (
+            <ListCard
+              item={service}
+              index={i}
+              href={`/es/servicios/${service.slug}/`}
+            />
+          ))}
       </div>
     </section>
 

@@ -37,7 +37,7 @@ export const productsEn: Product[] = [
     description:
       "Custom wedding invitation websites and event templates. Coming soon.",
     tags: ["Templates", "Wedding", "Websites"],
-    url: "",
+    url: "https://alwed.alpestech.uk/",
     status: "coming-soon",
     icon: "💒",
   },
@@ -51,7 +51,7 @@ export const productsEs: Product[] = [
     description:
       "Un entorno de desarrollo de Python completo diseñado para Android. Escribe, ejecuta y aprende Python en cualquier lugar, sin necesidad de laptop.",
     tags: ["Python", "Android", "IDE", "Desarrollo Móvil"],
-    url: "https://alpy.iaalvearp.workers.dev/",
+    url: "https://alpy.alpestech.uk/",
     status: "active",
     icon: "🐍",
     bullets: ["Escribe.", "Ejecuta.", "Aprende.", "En cualquier lugar."],
@@ -64,7 +64,7 @@ export const productsEs: Product[] = [
     description:
       "Sitios web de invitación y plantillas para eventos personalizadas. Próximamente.",
     tags: ["Plantillas", "Bodas", "Sitios Web"],
-    url: "",
+    url: "https://alwed.alpestech.uk/",
     status: "coming-soon",
     icon: "💒",
   },

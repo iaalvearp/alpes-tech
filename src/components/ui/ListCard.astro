@@ -9,15 +9,21 @@ import type { DetailItem } from "../../data/details";
 interface Props {
   item: DetailItem;
   index: number;
+  href?: string;
 }
 
-const { item, index } = Astro.props;
+const { item, index, href } = Astro.props;
 const isReversed = index % 2 !== 0;
+const Tag = href ? "a" : "article";
 
 const promptComment = `<!-- AI IMAGE PROMPT para ${item.cardTitle}: ${item.heroPrompt} -->`;
 ---
 
-<article class="list-card" aria-label={item.cardTitle}>
+<Tag
+  href={href}
+  class="list-card"
+  aria-label={item.cardTitle}
+>
   <div
     class:list={["list-card-inner", isReversed && "list-card-inner--reversed"]}
   >
@@ -52,10 +58,13 @@ const promptComment = `<!-- AI IMAGE PROMPT para ${item.cardTitle}: ${item.heroP
       </ul>
     </div>
   </div>
-</article>
+</Tag>
 
 <style>
   .list-card {
+    display: block;
+    color: inherit;
+    text-decoration: none;
     border-radius: calc(var(--radius) * 1.5);
     border: 1px solid hsl(var(--border) / 0.5);
     background: hsl(var(--card) / 0.4);
