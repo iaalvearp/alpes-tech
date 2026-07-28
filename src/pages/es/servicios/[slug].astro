@@ -1,6 +1,6 @@
 ---
 import DetailView from "../../../components/sections/DetailView.astro";
-import { servicesEs, detailBase, overviewLabel } from "../../../data/details";
+import { servicesEs } from "../../../data/details";
 
 export function getStaticPaths() {
   return servicesEs.map((item) => ({
@@ -15,6 +15,6 @@ const { item } = Astro.props;
 <DetailView
   item={item}
   lang="es"
-  overviewHref={detailBase("services", "es")}
-  overviewLabel={overviewLabel("services", "es")}
+  backHref="/es/#servicios"
+  backLabel="Volver a Servicios"
 />

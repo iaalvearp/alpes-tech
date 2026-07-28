@@ -16,13 +16,13 @@ import type { DetailItem } from "../../data/details";
 interface Props {
   item: DetailItem;
   lang: "en" | "es";
-  overviewHref: string;
-  overviewLabel: string;
+  backHref: string;
+  backLabel: string;
 }
 
-const { item, lang, overviewHref, overviewLabel } = Astro.props;
+const { item, lang, backHref, backLabel } = Astro.props;
 
-const backLabel = lang === "en" ? `← ${overviewLabel}` : `← ${overviewLabel}`;
+const resolvedBackLabel = `← ${backLabel}`;
 const keyPointsLabel = lang === "en" ? "Why choose us" : "Por qué elegirnos";
 const contactLabel = lang === "en" ? "Get in Touch" : "Ponerse en Contacto";
 const contactHref = lang === "es" ? "/es/#contacto" : "/#contacto";
@@ -44,7 +44,7 @@ const promptComment = `<!-- AI IMAGE PROMPT (genera o descarga esta imagen y ree
     <!-- ── Imagen Hero ── -->
     <section class="detail-hero" aria-label={item.title}>
       <div class="container detail-hero-inner animate-fade-up">
-        <a href={overviewHref} class="detail-back">{backLabel}</a>
+        <a href={backHref} class="detail-back">{resolvedBackLabel}</a>
 
         <div class="detail-hero-media">
           <Fragment set:html={promptComment} />

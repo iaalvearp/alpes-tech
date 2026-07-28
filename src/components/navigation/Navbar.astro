@@ -51,6 +51,14 @@ function getInitialAriaCurrent(link: NavLink): "page" | "location" | undefined {
   return isHome ? "location" : "page";
 }
 
+function getNavHref(link: NavLink): string {
+  if (link.section === "servicios" || link.section === "soluciones") {
+    const hash = `#${link.section}`;
+    return isHome ? hash : lang === "es" ? `/es/${hash}` : `/${hash}`;
+  }
+  return link.href;
+}
+
 function getAlternateLangPath(): string {
   if (lang === "es") {
     if (currentPath === "/es" || currentPath === "/es/") return "/";
@@ -89,7 +97,7 @@ function getAlternateLangPath(): string {
       {
         siteData.nav.map((link) => (
           <a
-            href={link.href}
+            href={getNavHref(link)}
             id={link.id}
             data-nav-section={link.section || link.id}
             class:list={[
@@ -137,7 +145,7 @@ function getAlternateLangPath(): string {
       {
         siteData.nav.map((link) => (
           <a
-            href={link.href}
+            href={getNavHref(link)}
             data-nav-section={link.section || link.id}
             class:list={[
               "mobile-nav-link",
