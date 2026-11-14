@@ -6,7 +6,11 @@ import {
   type BriefQuestion,
   type Lang,
 } from "../../data/brief-content";
-import { TEXT_FIELDS, TEXT_LIMITS } from "../../data/brief-schema";
+import {
+  OTHER_FIELDS,
+  TEXT_FIELDS,
+  TEXT_LIMITS,
+} from "../../data/brief-schema";
 import { COUNTRIES } from "../../lib/countries";
 import { normalizeText } from "../../lib/text";
 
@@ -36,6 +40,26 @@ function isChoice(q: BriefQuestion): q is BriefChoiceQuestion {
 function limitFor(key: string): number {
   const kind = TEXT_FIELDS[key as keyof typeof TEXT_FIELDS];
   return kind ? TEXT_LIMITS[kind] : TEXT_LIMITS.short;
+}
+
+function otherFor(key: string): { option: string; field: string } | null {
+  return (
+    (OTHER_FIELDS as Record<string, { option: string; field: string }>)[key] ??
+    null
+  );
+}
+
+function otherContentFor(
+  key: string,
+): { label: string; placeholder: string; error: string } | null {
+  return (
+    (
+      t.otherFields as Record<
+        string,
+        { label: string; placeholder: string; error: string }
+      >
+    )[key] ?? null
+  );
 }
 
 function autocompleteFor(key: string): string | undefined {
@@ -79,7 +103,6 @@ function autocompleteFor(key: string): string | undefined {
       data-required-error={t.requiredError}
       data-email-error={t.emailError}
       data-consent-error={t.consentError}
-      data-max-error={t.maxError}
       data-error-text={t.errorText}
       data-sending-text={t.sending}
       data-email-suggestion-template={t.emailSuggestion}
@@ -141,26 +164,61 @@ function autocompleteFor(key: string): string | undefined {
                     >
                       <legend class="field-label">
                         {q.label}
-                        {q.max && (
-                          <span class="field-hint">
-                            {t.maxError.replace("{max}", String(q.max))}
-                          </span>
-                        )}
+                        {q.hint && <span class="field-hint">{q.hint}</span>}
                       </legend>
                       <div class="choices">
-                        {q.options.map((option) => (
-                          <label class="choice">
-                            <input
-                              class="choice-input"
-                              type={q.type === "multi" ? "checkbox" : "radio"}
-                              name={q.key}
-                              value={option.key}
-                              data-choice
-                            />
-                            <span class="choice-box" aria-hidden="true" />
-                            <span class="choice-label">{option.label}</span>
-                          </label>
-                        ))}
+                        {q.options.map((option) => {
+                          const other = otherFor(q.key);
+                          const otherContent = otherContentFor(q.key);
+                          return (
+                            <>
+                              <label class="choice">
+                                <input
+                                  class="choice-input"
+                                  type={q.type === "multi" ? "checkbox" : "radio"}
+                                  name={q.key}
+                                  value={option.key}
+                                  data-choice
+                                />
+                                <span class="choice-box" aria-hidden="true" />
+                                <span class="choice-label">{option.label}</span>
+                              </label>
+                              {other &&
+                                otherContent &&
+                                other.option === option.key && (
+                                  <div
+                                    class="other-field"
+                                    data-other-field={q.key}
+                                    hidden
+                                  >
+                                    <label
+                                      class="field-label"
+                                      for={`brief-field-${other.field}`}
+                                    >
+                                      {otherContent.label}
+                                    </label>
+                                    <input
+                                      class="text-input"
+                                      id={`brief-field-${other.field}`}
+                                      type="text"
+                                      name={other.field}
+                                      maxlength={limitFor(other.field)}
+                                      placeholder={otherContent.placeholder}
+                                      data-other-input
+                                      data-other-error={otherContent.error}
+                                      disabled
+                                    />
+                                    <p
+                                      class="field-error"
+                                      data-error-for={other.field}
+                                      role="alert"
+                                      hidden
+                                    />
+                                  </div>
+                                )}
+                            </>
+                          );
+                        })}
                       </div>
                       <p class="field-error" data-error-for={q.key} role="alert" hidden />
                     </fieldset>
@@ -417,10 +475,15 @@ function autocompleteFor(key: string): string | undefined {
 </section>
 
 <script>
+  import { OTHER_FIELDS } from "../../data/brief-schema";
   import { findByText, getByCode, suggestCountry } from "../../lib/countries";
   import { isValidEmail, suggestEmailFix } from "../../lib/email";
   import { normalizePhone } from "../../lib/phone";
   import { normalizeText } from "../../lib/text";
+
+  const OTHER_ENTRIES = Object.entries(OTHER_FIELDS) as Array<
+    [string, { option: string; field: string }]
+  >;
 
   interface CountryComboApi {
     sync: () => void;
@@ -589,6 +652,36 @@ function autocompleteFor(key: string): string | undefined {
       });
     }
 
+    function isOtherSelected(question: string, option: string): boolean {
+      return Array.from(
+        form!.querySelectorAll<HTMLInputElement>(`input[name="${question}"]`),
+      ).some((input) => input.checked && input.value === option);
+    }
+
+    function syncOtherFields(focusQuestion?: string) {
+      OTHER_ENTRIES.forEach(([question, config]) => {
+        const wrapper = form!.querySelector<HTMLElement>(
+          `[data-other-field="${question}"]`,
+        );
+        const input = wrapper?.querySelector<HTMLInputElement>(
+          "[data-other-input]",
+        );
+        if (!wrapper || !input) return;
+
+        const active = isOtherSelected(question, config.option);
+        wrapper.hidden = !active;
+        input.disabled = !active;
+
+        if (!active) {
+          input.value = "";
+          input.removeAttribute("aria-invalid");
+          clearError(config.field);
+        } else if (focusQuestion === question) {
+          input.focus();
+        }
+      });
+    }
+
     function collect(): Record<string, string | string[]> {
       const data: Record<string, string | string[]> = {};
       form!.querySelectorAll<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>(
@@ -723,6 +816,22 @@ function autocompleteFor(key: string): string | undefined {
       clearStepErrors(section);
 
       let firstInvalid: HTMLElement | null = null;
+
+      OTHER_ENTRIES.forEach(([question, config]) => {
+        const input = section.querySelector<HTMLInputElement>(
+          `[name="${config.field}"]`,
+        );
+        if (!input || !isOtherSelected(question, config.option)) return;
+        if (input.value.trim()) return;
+
+        const message =
+          input.dataset.otherError ||
+          root.dataset.requiredError ||
+          "Obligatorio";
+        setError(config.field, message);
+        input.setAttribute("aria-invalid", "true");
+        if (!firstInvalid) firstInvalid = input;
+      });
 
       if (index === 0) {
         ["nombre", "empresa", "correo"].forEach((name) => {
@@ -1236,10 +1345,6 @@ function autocompleteFor(key: string): string | undefined {
       });
     }
 
-    const objetivos = Array.from(
-      form.querySelectorAll<HTMLInputElement>('input[name="objetivos"]'),
-    );
-
     form.addEventListener("input", (event) => {
       const target = event.target as HTMLElement | null;
       if (target && "name" in target && (target as HTMLInputElement).name) {
@@ -1254,23 +1359,18 @@ function autocompleteFor(key: string): string | undefined {
       const target = event.target as HTMLElement | null;
       if (target && "name" in target && (target as HTMLInputElement).name) {
         const name = (target as HTMLInputElement).name;
+        clearError(name);
+        target.removeAttribute("aria-invalid");
 
-        if (name === "objetivos") {
-          if (objetivos.filter((item) => item.checked).length > 3) {
-            if (target instanceof HTMLInputElement && target.checked) {
-              target.checked = false;
-            }
-            setError(
-              "objetivos",
-              (root.dataset.maxError || "Máximo {max}").replace("{max}", "3"),
-            );
-          } else {
-            clearError("objetivos");
-          }
-        } else {
-          clearError(name);
-          target.removeAttribute("aria-invalid");
-        }
+        const other = OTHER_ENTRIES.find(([question]) => question === name);
+        const focusQuestion =
+          other &&
+          target instanceof HTMLInputElement &&
+          target.checked &&
+          target.value === other[1].option
+            ? name
+            : undefined;
+        syncOtherFields(focusQuestion);
       }
       applyConditionals();
       save();
@@ -1391,6 +1491,7 @@ function autocompleteFor(key: string): string | undefined {
 
     restore();
     applyConditionals();
+    syncOtherFields();
     showStep(stepIndex, false);
     if (timeInput) timeInput.value = "0";
 
@@ -1812,6 +1913,21 @@ function autocompleteFor(key: string): string | undefined {
   .choice-label {
     font-size: 0.95rem;
     line-height: 1.45;
+  }
+
+  .other-field {
+    display: flex;
+    flex-direction: column;
+    gap: 0.45rem;
+    padding: 0.9rem 1rem;
+    border: 1px solid hsl(var(--primary) / 0.25);
+    border-radius: var(--radius);
+    background: hsl(var(--primary) / 0.05);
+  }
+
+  .other-field .field-label {
+    font-size: 0.85rem;
+    color: hsl(var(--muted-foreground));
   }
 
   .field-error {

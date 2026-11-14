@@ -6,8 +6,8 @@
  */
 
 import {
-  MAX_OBJETIVOS,
   MULTI_SELECT,
+  OTHER_FIELDS,
   REQUIRED_FIELDS,
   SINGLE_SELECT,
   TEXT_FIELDS,
@@ -55,9 +55,11 @@ const SUBMISSION_COLUMNS = [
   "pais",
   "pais_codigo",
   "actividad",
+  "objetivos_otro",
   "tiene_web",
   "web_actual_url",
   "idiomas",
+  "idiomas_otro",
   "volumen",
   "materiales",
   "estilo",
@@ -81,6 +83,10 @@ const SUBMISSION_COLUMNS = [
   "redes_texto",
   "notas",
 ] as const;
+
+const OTHER_TEXT_FIELDS = new Set<string>(
+  Object.values(OTHER_FIELDS).map((entry) => entry.field),
+);
 
 function json(body: unknown, status = 200, extraHeaders: Record<string, string> = {}) {
   return new Response(JSON.stringify(body), {
@@ -170,6 +176,7 @@ export const onRequest = async (context: PagesContext): Promise<Response> => {
 
   // Texto libre: recorta espacios y respeta el límite de cada campo.
   for (const key of Object.keys(TEXT_FIELDS) as TextFieldKey[]) {
+    if (OTHER_TEXT_FIELDS.has(key)) continue;
     const raw = body[key];
     if (raw === undefined || raw === null) {
       values[key] = null;
@@ -256,10 +263,31 @@ export const onRequest = async (context: PagesContext): Promise<Response> => {
     if (raw.some((item) => typeof item !== "string" || !allowed.includes(item))) {
       invalid.push(key);
     }
-    if (key === "objetivos" && picked.length > MAX_OBJETIVOS) {
-      invalid.push(key);
-    }
     selections[key] = picked.filter((item) => allowed.includes(item));
+  }
+
+  // Opciones "otro": el texto solo se guarda y valida si la opción está activa.
+  for (const [questionKey, config] of Object.entries(OTHER_FIELDS)) {
+    const selected =
+      questionKey in MULTI_SELECT
+        ? (selections[questionKey] || []).includes(config.option)
+        : values[questionKey] === config.option;
+
+    if (!selected) {
+      values[config.field] = null;
+      continue;
+    }
+
+    const raw = body[config.field];
+    if (typeof raw !== "string") {
+      values[config.field] = null;
+      invalid.push(config.field);
+      continue;
+    }
+
+    const limit = TEXT_LIMITS[TEXT_FIELDS[config.field as TextFieldKey]];
+    values[config.field] = raw.trim().slice(0, limit);
+    if (!values[config.field]) invalid.push(config.field);
   }
 
   if (invalid.length > 0) {

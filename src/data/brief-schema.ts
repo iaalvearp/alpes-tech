@@ -25,12 +25,14 @@ export const TEXT_FIELDS = {
   pais: "short",
   pais_codigo: "short",
   actividad: "textarea",
+  objetivos_otro: "short",
   // Paso 2
   web_actual_url: "short",
   // Paso 4
   referencias: "textarea",
   // Paso 5
   dominio_nombre: "short",
+  idiomas_otro: "short",
   sistema_interno_detalle: "short",
   redes_texto: "short",
   // Paso 6
@@ -38,6 +40,14 @@ export const TEXT_FIELDS = {
 } as const satisfies Record<string, TextKind>;
 
 export type TextFieldKey = keyof typeof TEXT_FIELDS;
+
+/** Opciones "otro" que requieren un texto libre asociado. */
+export const OTHER_FIELDS = {
+  objetivos: { option: "otro", field: "objetivos_otro" },
+  idiomas: { option: "otro", field: "idiomas_otro" },
+} as const satisfies Record<string, { option: string; field: string }>;
+
+export type OtherQuestionKey = keyof typeof OTHER_FIELDS;
 
 /** Preguntas de selección múltiple (una fila por opción en brief_choices). */
 export const MULTI_SELECT = {
@@ -85,9 +95,6 @@ export const SINGLE_SELECT = {
 } as const;
 
 export type SingleQuestionKey = keyof typeof SINGLE_SELECT;
-
-/** Máximo de opciones permitidas en la pregunta "objetivos". */
-export const MAX_OBJETIVOS = 3;
 
 /** Campos obligatorios del paso 1. */
 export const REQUIRED_FIELDS = ["nombre", "empresa", "correo"] as const;

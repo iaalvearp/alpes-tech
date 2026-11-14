@@ -32,7 +32,6 @@ export interface BriefTextQuestion extends BaseQuestion {
 export interface BriefChoiceQuestion extends BaseQuestion {
   type: "single" | "multi";
   options: BriefOption[];
-  max?: number;
 }
 
 export type BriefQuestion = BriefTextQuestion | BriefChoiceQuestion;
@@ -60,7 +59,10 @@ export interface BriefContent {
   emailError: string;
   emailSuggestion: string;
   consentError: string;
-  maxError: string;
+  otherFields: Record<
+    string,
+    { label: string; placeholder: string; error: string }
+  >;
   countryPlaceholder: string;
   countryListLabel: string;
   countrySuggestion: string;
@@ -90,7 +92,18 @@ const es: BriefContent = {
   emailError: "Escribe un correo válido.",
   emailSuggestion: "¿Quisiste decir {email}?",
   consentError: "Debes aceptar para que podamos contactarte.",
-  maxError: "Puedes elegir hasta {max}.",
+  otherFields: {
+    objetivos: {
+      label: "Otro objetivo",
+      placeholder: "Cuéntanos cuál otro objetivo tienes",
+      error: "Cuéntanos cuál para poder ayudarte",
+    },
+    idiomas: {
+      label: "Otro idioma",
+      placeholder: "¿Qué otro idioma necesitas?",
+      error: "Cuéntanos cuál para poder ayudarte",
+    },
+  },
   countryPlaceholder: "Escribe tu país",
   countryListLabel: "Países",
   countrySuggestion: "¿Quisiste decir {country}?",
@@ -142,8 +155,8 @@ const es: BriefContent = {
         {
           key: "objetivos",
           type: "multi",
-          label: "Elige hasta 3 objetivos",
-          max: 3,
+          label: "Elige tus objetivos",
+          hint: "Marca todos los que apliquen",
           options: [
             { key: "encontrarme", label: "Que me encuentren en Google" },
             { key: "mostrar", label: "Mostrar mis productos o servicios" },
@@ -484,7 +497,18 @@ const en: BriefContent = {
   emailError: "Enter a valid email address.",
   emailSuggestion: "Did you mean {email}?",
   consentError: "You need to accept so we can contact you.",
-  maxError: "You can choose up to {max}.",
+  otherFields: {
+    objetivos: {
+      label: "Other goal",
+      placeholder: "Tell us what other goal you have",
+      error: "Tell us which one so we can help you",
+    },
+    idiomas: {
+      label: "Other language",
+      placeholder: "Which other language do you need?",
+      error: "Tell us which one so we can help you",
+    },
+  },
   countryPlaceholder: "Type your country",
   countryListLabel: "Countries",
   countrySuggestion: "Did you mean {country}?",
@@ -536,8 +560,8 @@ const en: BriefContent = {
         {
           key: "objetivos",
           type: "multi",
-          label: "Choose up to 3 goals",
-          max: 3,
+          label: "Choose your goals",
+          hint: "Select all that apply",
           options: [
             { key: "encontrarme", label: "Show up on Google" },
             { key: "mostrar", label: "Show my products or services" },
