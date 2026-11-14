@@ -11,6 +11,7 @@ import {
   TEXT_FIELDS,
   TEXT_LIMITS,
 } from "../../data/brief-schema";
+import { site } from "../../data/site";
 import { COUNTRIES } from "../../lib/countries";
 import { normalizeText } from "../../lib/text";
 
@@ -62,6 +63,28 @@ function otherContentFor(
   );
 }
 
+function fieldLabelMap(): Record<string, string> {
+  const labels: Record<string, string> = {
+    body: t.eyebrow,
+    consentimiento: t.consentFieldLabel,
+    whatsapp_pais: t.phoneCountryLabel,
+  };
+
+  t.steps.forEach((step) => {
+    step.questions.forEach((question) => {
+      labels[question.key] = question.label;
+    });
+  });
+
+  Object.entries(t.otherFields).forEach(([key, content]) => {
+    const other = otherFor(key);
+    if (other) labels[other.field] = content.label;
+  });
+
+  if (labels.pais) labels.pais_codigo = labels.pais;
+  return labels;
+}
+
 function autocompleteFor(key: string): string | undefined {
   switch (key) {
     case "nombre":
@@ -104,6 +127,10 @@ function autocompleteFor(key: string): string | undefined {
       data-email-error={t.emailError}
       data-consent-error={t.consentError}
       data-error-text={t.errorText}
+      data-network-error={t.networkError}
+      data-validation-error={t.validationError}
+      data-field-error={t.fieldError}
+      data-field-labels={JSON.stringify(fieldLabelMap())}
       data-sending-text={t.sending}
       data-email-suggestion-template={t.emailSuggestion}
       data-country-suggestion-template={t.countrySuggestion}
@@ -461,7 +488,25 @@ function autocompleteFor(key: string): string | undefined {
           </button>
         </div>
 
-        <p class="form-status" role="alert" aria-live="assertive" data-form-status hidden />
+        <div
+          class="form-status"
+          role="alert"
+          aria-live="assertive"
+          data-form-status
+          hidden
+        >
+          <span data-form-status-text></span>{" "}
+          <a
+            class="form-status-link"
+            data-form-status-whatsapp
+            href={site.contact.whatsapp}
+            target="_blank"
+            rel="noopener noreferrer"
+            hidden
+          >
+            {t.whatsappLink}
+          </a>
+        </div>
         <p class="form-status-code" data-form-status-code hidden />
       </form>
 
@@ -503,6 +548,7 @@ function autocompleteFor(key: string): string | undefined {
     ok?: boolean;
     error?: string;
     detail?: string;
+    campos?: string[];
   }
 
   function initBrief(root: HTMLElement) {
@@ -529,7 +575,22 @@ function autocompleteFor(key: string): string | undefined {
     const nextBtn = root.querySelector<HTMLButtonElement>("[data-next]");
     const submitBtn = root.querySelector<HTMLButtonElement>("[data-submit]");
     const statusEl = root.querySelector<HTMLElement>("[data-form-status]");
+    const statusTextEl = root.querySelector<HTMLElement>(
+      "[data-form-status-text]",
+    );
+    const statusWhatsappEl = root.querySelector<HTMLAnchorElement>(
+      "[data-form-status-whatsapp]",
+    );
     const statusCodeEl = root.querySelector<HTMLElement>("[data-form-status-code]");
+    let fieldLabels: Record<string, string> = {};
+    try {
+      fieldLabels = JSON.parse(root.dataset.fieldLabels || "{}") as Record<
+        string,
+        string
+      >;
+    } catch {
+      fieldLabels = {};
+    }
     const successEl = root.querySelector<HTMLElement>("[data-success]");
     const timeInput = root.querySelector<HTMLInputElement>("[data-time]");
     const consent = form.querySelector<HTMLInputElement>(
@@ -554,45 +615,85 @@ function autocompleteFor(key: string): string | undefined {
     }
 
     function clearStatus() {
-      if (statusEl) {
-        statusEl.hidden = true;
-        statusEl.textContent = "";
-      }
+      if (statusEl) statusEl.hidden = true;
+      if (statusTextEl) statusTextEl.textContent = "";
+      if (statusWhatsappEl) statusWhatsappEl.hidden = true;
       if (statusCodeEl) {
         statusCodeEl.hidden = true;
         statusCodeEl.textContent = "";
       }
     }
 
-    function showSubmitError(
-      status: number | null,
-      data: BriefApiResponse | null,
-    ) {
-      if (statusEl) {
-        statusEl.textContent =
-          root.dataset.errorText ||
-          "No pudimos enviar tus respuestas. Inténtalo de nuevo.";
-        statusEl.hidden = false;
-      }
+    function hideCodeLine() {
+      if (!statusCodeEl) return;
+      statusCodeEl.hidden = true;
+      statusCodeEl.textContent = "";
+    }
 
-      if (statusCodeEl) {
-        if (
-          status !== null &&
-          data &&
-          typeof data.detail === "string" &&
-          data.detail !== ""
-        ) {
-          const error =
-            typeof data.error === "string" && data.error
-              ? data.error
-              : "error";
-          statusCodeEl.textContent = `Código: ${status} ${error} — ${data.detail}`;
-          statusCodeEl.hidden = false;
-        } else {
-          statusCodeEl.textContent = "";
-          statusCodeEl.hidden = true;
-        }
-      }
+    function showStatus(message: string, withWhatsapp = false) {
+      if (statusTextEl) statusTextEl.textContent = message;
+      if (statusWhatsappEl) statusWhatsappEl.hidden = !withWhatsapp;
+      if (statusEl) statusEl.hidden = false;
+    }
+
+    function showCodeLine(status: number, data: BriefApiResponse | null) {
+      if (!statusCodeEl) return;
+      const error =
+        data && typeof data.error === "string" && data.error
+          ? data.error
+          : "error";
+      const detail =
+        data && typeof data.detail === "string" && data.detail
+          ? ` — ${data.detail}`
+          : "";
+      statusCodeEl.textContent = `Código: ${status} ${error}${detail}`;
+      statusCodeEl.hidden = false;
+    }
+
+    function fieldStep(name: string): number {
+      return steps.findIndex((section) =>
+        Boolean(section.querySelector(`[name="${name}"], [data-field="${name}"]`)),
+      );
+    }
+
+    function showNetworkError() {
+      hideCodeLine();
+      showStatus(
+        root.dataset.networkError ||
+          "No pudimos conectarnos. Revisa tu conexión e inténtalo de nuevo.",
+        false,
+      );
+    }
+
+    function showValidationError(campos: string[]) {
+      const labels = campos.map((name) => fieldLabels[name] || name);
+      const first = campos[0];
+      const step = first ? fieldStep(first) : -1;
+      if (step >= 0 && step !== stepIndex) showStep(step, false);
+
+      hideCodeLine();
+      showStatus(
+        `${root.dataset.validationError || "Revisa estos campos:"} ${labels.join(", ")}.`,
+        false,
+      );
+
+      if (!first) return;
+      const field =
+        control(first) ||
+        form!.querySelector<HTMLElement>(`[data-field="${first}"]`);
+      if (!field) return;
+      setError(first, root.dataset.fieldError || "Revisa este campo.");
+      field.setAttribute("aria-invalid", "true");
+      field.focus();
+    }
+
+    function showOtherError(status: number, data: BriefApiResponse | null) {
+      showStatus(
+        root.dataset.errorText ||
+          "No pudimos enviar tus respuestas. Inténtalo de nuevo.",
+        true,
+      );
+      showCodeLine(status, data);
     }
 
     function setError(name: string, message: string) {
@@ -1423,7 +1524,15 @@ function autocompleteFor(key: string): string | undefined {
         }
 
         if (!response.ok || !data || data.ok !== true) {
-          showSubmitError(response.status, data);
+          const campos =
+            data && Array.isArray(data.campos)
+              ? data.campos.filter((campo) => typeof campo === "string")
+              : [];
+          if (response.status === 400 && campos.length > 0) {
+            showValidationError(campos);
+          } else {
+            showOtherError(response.status, data);
+          }
           submitBtn.disabled = false;
           submitBtn.textContent = tSubmitLabel();
           form.removeAttribute("aria-busy");
@@ -1441,7 +1550,7 @@ function autocompleteFor(key: string): string | undefined {
         const top = root.getBoundingClientRect().top + window.scrollY - 90;
         window.scrollTo({ top, behavior: reduceMotion ? "auto" : "smooth" });
       } catch {
-        showSubmitError(null, null);
+        showNetworkError();
         submitBtn.disabled = false;
         submitBtn.textContent = tSubmitLabel();
         form.removeAttribute("aria-busy");
@@ -1987,6 +2096,13 @@ function autocompleteFor(key: string): string | undefined {
     background: hsl(var(--destructive) / 0.08);
     color: hsl(var(--foreground));
     font-size: 0.9rem;
+  }
+
+  .form-status-link {
+    color: hsl(var(--primary));
+    font-weight: 600;
+    text-decoration: underline;
+    text-underline-offset: 2px;
   }
 
   .form-status-code {

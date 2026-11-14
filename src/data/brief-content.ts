@@ -54,6 +54,11 @@ export interface BriefContent {
   successTitle: string;
   successText: string;
   errorText: string;
+  networkError: string;
+  validationError: string;
+  fieldError: string;
+  whatsappLink: string;
+  consentFieldLabel: string;
   consentLabel: string;
   requiredError: string;
   emailError: string;
@@ -85,7 +90,13 @@ const es: BriefContent = {
   successTitle: "¡Gracias!",
   successText: "Revisaremos tu información y te contactaremos pronto.",
   errorText:
-    "No pudimos enviar tus respuestas. Revisa tu conexión e inténtalo de nuevo.",
+    "No pudimos enviar tus respuestas. Inténtalo de nuevo en unos minutos o escríbenos por",
+  networkError:
+    "No pudimos conectarnos. Revisa tu conexión e inténtalo de nuevo.",
+  validationError: "Revisa estos campos:",
+  fieldError: "Revisa este campo.",
+  whatsappLink: "WhatsApp.",
+  consentFieldLabel: "Consentimiento",
   consentLabel:
     "Acepto que usen mis datos solo para contactarme sobre este proyecto.",
   requiredError: "Este campo es obligatorio.",
@@ -479,7 +490,13 @@ const en: BriefContent = {
   successTitle: "Thank you!",
   successText: "We'll review your information and contact you soon.",
   errorText:
-    "We couldn't send your answers. Please check your connection and try again.",
+    "We couldn't send your answers. Please try again in a few minutes or message us on",
+  networkError:
+    "We couldn't connect. Check your connection and try again.",
+  validationError: "Check these fields:",
+  fieldError: "Check this field.",
+  whatsappLink: "WhatsApp.",
+  consentFieldLabel: "Consent",
   consentLabel:
     "I agree that my data will be used only to contact me about this project.",
   requiredError: "This field is required.",
