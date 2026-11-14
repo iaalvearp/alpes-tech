@@ -8,6 +8,7 @@ export const site = {
   url: "https://alpestech.uk",
   contact: {
     email: "info@alpestech.uk",
+    whatsapp: "https://wa.me/593982486981",
   },
   en: {
     tagline: "Building software products for developers.",

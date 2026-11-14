@@ -1,0 +1,20 @@
+---
+import Layout from "../../layouts/Layout.astro";
+import Navbar from "../../components/navigation/Navbar.astro";
+import Footer from "../../components/navigation/Footer.astro";
+import BriefWizard from "../../components/brief/BriefWizard.astro";
+---
+
+<Layout
+  title="Cuéntanos tu proyecto"
+  description="Cuéntanos un poco sobre tu empresa y lo que necesitas para que Alpes Tech prepare la propuesta adecuada para tu proyecto."
+  lang="es"
+>
+  <Navbar lang="es" />
+
+  <main id="main-content" tabindex="-1">
+    <BriefWizard lang="es" />
+  </main>
+
+  <Footer lang="es" />
+</Layout>
