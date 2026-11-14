@@ -58,8 +58,15 @@ export interface BriefContent {
   consentLabel: string;
   requiredError: string;
   emailError: string;
+  emailSuggestion: string;
   consentError: string;
   maxError: string;
+  countryPlaceholder: string;
+  countryListLabel: string;
+  countrySuggestion: string;
+  phoneCountryLabel: string;
+  phoneEcError: string;
+  phoneLengthError: string;
   steps: BriefStep[];
 }
 
@@ -81,8 +88,16 @@ const es: BriefContent = {
     "Acepto que usen mis datos solo para contactarme sobre este proyecto.",
   requiredError: "Este campo es obligatorio.",
   emailError: "Escribe un correo válido.",
+  emailSuggestion: "¿Quisiste decir {email}?",
   consentError: "Debes aceptar para que podamos contactarte.",
   maxError: "Puedes elegir hasta {max}.",
+  countryPlaceholder: "Escribe tu país",
+  countryListLabel: "Países",
+  countrySuggestion: "¿Quisiste decir {country}?",
+  phoneCountryLabel: "País del WhatsApp",
+  phoneEcError:
+    "Escribe un celular ecuatoriano válido, por ejemplo 0991234567",
+  phoneLengthError: "Revisa el número: debe tener entre 6 y 15 dígitos",
   steps: [
     {
       title: "Cuéntanos de tu empresa",
@@ -467,8 +482,16 @@ const en: BriefContent = {
     "I agree that my data will be used only to contact me about this project.",
   requiredError: "This field is required.",
   emailError: "Enter a valid email address.",
+  emailSuggestion: "Did you mean {email}?",
   consentError: "You need to accept so we can contact you.",
   maxError: "You can choose up to {max}.",
+  countryPlaceholder: "Type your country",
+  countryListLabel: "Countries",
+  countrySuggestion: "Did you mean {country}?",
+  phoneCountryLabel: "WhatsApp country",
+  phoneEcError:
+    "Enter a valid Ecuadorian mobile number, for example 0991234567",
+  phoneLengthError: "Check the number: it must have between 6 and 15 digits",
   steps: [
     {
       title: "Tell us about your company",

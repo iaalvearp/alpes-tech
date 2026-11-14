@@ -7,6 +7,8 @@ import {
   type Lang,
 } from "../../data/brief-content";
 import { TEXT_FIELDS, TEXT_LIMITS } from "../../data/brief-schema";
+import { COUNTRIES } from "../../lib/countries";
+import { normalizeText } from "../../lib/text";
 
 interface Props {
   lang?: Lang;
@@ -15,6 +17,17 @@ interface Props {
 const { lang = "es" } = Astro.props;
 const t = briefContent[lang];
 const totalSteps = t.steps.length;
+
+const countryName = (country: (typeof COUNTRIES)[number]) =>
+  lang === "es" ? country.nameEs : country.nameEn;
+
+const sortedCountries = [...COUNTRIES].sort((a, b) => {
+  if (a.code === "EC") return -1;
+  if (b.code === "EC") return 1;
+  return countryName(a).localeCompare(countryName(b), lang, {
+    sensitivity: "base",
+  });
+});
 
 function isChoice(q: BriefQuestion): q is BriefChoiceQuestion {
   return q.type === "single" || q.type === "multi";
@@ -69,6 +82,10 @@ function autocompleteFor(key: string): string | undefined {
       data-max-error={t.maxError}
       data-error-text={t.errorText}
       data-sending-text={t.sending}
+      data-email-suggestion-template={t.emailSuggestion}
+      data-country-suggestion-template={t.countrySuggestion}
+      data-phone-ec-error={t.phoneEcError}
+      data-phone-length-error={t.phoneLengthError}
     >
       <div class="progress-wrap" data-progress-wrap>
         <div
@@ -147,6 +164,169 @@ function autocompleteFor(key: string): string | undefined {
                       </div>
                       <p class="field-error" data-error-for={q.key} role="alert" hidden />
                     </fieldset>
+                  ) : q.key === "pais" ? (
+                    <div class="field" data-field="pais" data-country-field>
+                      <label class="field-label" for="brief-field-pais">
+                        {q.label}
+                      </label>
+                      <div class="country-combo" data-country-combo>
+                        <div class="country-input-wrap">
+                          <span class="country-flag" data-country-flag aria-hidden="true">
+                            <img
+                              src="/flags/ec.png"
+                              width="24"
+                              alt=""
+                              data-country-flag-img
+                              hidden
+                            />
+                            <svg
+                              class="globe-icon"
+                              data-country-globe
+                              width="20"
+                              height="20"
+                              viewBox="0 0 24 24"
+                              fill="none"
+                              stroke="currentColor"
+                              stroke-width="1.8"
+                              stroke-linecap="round"
+                              stroke-linejoin="round"
+                            >
+                              <circle cx="12" cy="12" r="9"></circle>
+                              <path d="M3 12h18M12 3a15 15 0 0 1 0 18M12 3a15 15 0 0 0 0 18"></path>
+                            </svg>
+                          </span>
+                          <input
+                            class="text-input country-input"
+                            id="brief-field-pais"
+                            type="text"
+                            name="pais"
+                            maxlength={limitFor("pais")}
+                            placeholder={t.countryPlaceholder}
+                            autocomplete="off"
+                            role="combobox"
+                            aria-expanded="false"
+                            aria-controls="country-list-pais"
+                            aria-autocomplete="list"
+                            data-country-input
+                          />
+                        </div>
+                        <ul
+                          class="country-list"
+                          id="country-list-pais"
+                          role="listbox"
+                          aria-label={t.countryListLabel}
+                          hidden
+                          data-country-list
+                        >
+                          {sortedCountries.map((country) => (
+                            <li
+                              class="country-option"
+                              role="option"
+                              id={`country-pais-${country.code}`}
+                              aria-selected="false"
+                              data-country-option
+                              data-code={country.code}
+                              data-name={countryName(country)}
+                              data-dial={country.dial}
+                              data-flag={country.flag}
+                              data-search={normalizeText(
+                                [country.nameEs, country.nameEn, ...country.aliases].join(" "),
+                              )}
+                            >
+                              <img src={country.flag} width="24" alt="" loading="lazy" />
+                              <span class="country-option-name">{countryName(country)}</span>
+                              <span class="country-option-dial">+{country.dial}</span>
+                            </li>
+                          ))}
+                        </ul>
+                      </div>
+                      <input
+                        type="hidden"
+                        name="pais_codigo"
+                        value=""
+                        data-country-code
+                      />
+                      <button
+                        type="button"
+                        class="suggestion"
+                        data-country-suggestion
+                        hidden
+                      />
+                    </div>
+                  ) : q.key === "whatsapp" ? (
+                    <div class="field" data-field="whatsapp">
+                      <label class="field-label" for="brief-field-whatsapp">
+                        {q.label}
+                      </label>
+                      <div class="phone-row">
+                        <div class="phone-country" data-phone-country>
+                          <button
+                            type="button"
+                            class="phone-trigger"
+                            data-phone-trigger
+                            aria-haspopup="listbox"
+                            aria-expanded="false"
+                            aria-controls="country-list-phone"
+                            aria-label={t.phoneCountryLabel}
+                          >
+                            <img
+                              src="/flags/ec.png"
+                              width="24"
+                              alt=""
+                              data-phone-flag
+                            />
+                            <span class="phone-dial" data-phone-dial>+593</span>
+                          </button>
+                          <ul
+                            class="country-list phone-list"
+                            id="country-list-phone"
+                            role="listbox"
+                            aria-label={t.phoneCountryLabel}
+                            hidden
+                            data-phone-list
+                          >
+                            {sortedCountries.map((country) => (
+                              <li
+                                class="country-option"
+                                role="option"
+                                id={`country-phone-${country.code}`}
+                                aria-selected="false"
+                                data-country-option
+                                data-code={country.code}
+                                data-name={countryName(country)}
+                                data-dial={country.dial}
+                                data-flag={country.flag}
+                                data-search={normalizeText(
+                                  [country.nameEs, country.nameEn, ...country.aliases].join(" "),
+                                )}
+                              >
+                                <img src={country.flag} width="24" alt="" loading="lazy" />
+                                <span class="country-option-name">{countryName(country)}</span>
+                                <span class="country-option-dial">+{country.dial}</span>
+                              </li>
+                            ))}
+                          </ul>
+                          <input
+                            type="hidden"
+                            name="whatsapp_pais"
+                            value="EC"
+                            data-phone-code
+                          />
+                        </div>
+                        <input
+                          class="text-input phone-input"
+                          id={`brief-field-${q.key}`}
+                          type="tel"
+                          name={q.key}
+                          maxlength={limitFor(q.key)}
+                          placeholder={q.placeholder}
+                          autocomplete="tel"
+                          inputmode="tel"
+                          data-phone-input
+                        />
+                      </div>
+                      <p class="field-error" data-error-for={q.key} role="alert" hidden />
+                    </div>
                   ) : (
                     <div
                       class="field"
@@ -177,6 +357,14 @@ function autocompleteFor(key: string): string | undefined {
                           placeholder={q.placeholder}
                           autocomplete={autocompleteFor(q.key)}
                           required={q.required}
+                        />
+                      )}
+                      {q.key === "correo" && (
+                        <button
+                          type="button"
+                          class="suggestion"
+                          data-email-suggestion
+                          hidden
                         />
                       )}
                       <p class="field-error" data-error-for={q.key} role="alert" hidden />
@@ -228,7 +416,24 @@ function autocompleteFor(key: string): string | undefined {
 </section>
 
 <script>
-  const EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+  import { findByText, getByCode, suggestCountry } from "../../lib/countries";
+  import { isValidEmail, suggestEmailFix } from "../../lib/email";
+  import { normalizePhone } from "../../lib/phone";
+  import { normalizeText } from "../../lib/text";
+
+  interface CountryComboApi {
+    sync: () => void;
+    applyCode: (code: string, fromUser?: boolean) => void;
+    touched: () => boolean;
+    value: () => string;
+  }
+
+  interface PhoneComboApi {
+    sync: () => void;
+    setCode: (code: string, fromUser?: boolean) => void;
+    isTouched: () => boolean;
+    code: () => string;
+  }
 
   function initBrief(root: HTMLElement) {
     const form = root.querySelector<HTMLFormElement>("[data-brief-form]");
@@ -483,7 +688,7 @@ function autocompleteFor(key: string): string | undefined {
 
           if (!value) {
             message = root.dataset.requiredError || "Obligatorio";
-          } else if (name === "correo" && !EMAIL_RE.test(value)) {
+          } else if (name === "correo" && !isValidEmail(value)) {
             message = root.dataset.emailError || "Correo inválido";
           }
 
@@ -509,6 +714,482 @@ function autocompleteFor(key: string): string | undefined {
         return false;
       }
       return true;
+    }
+
+    /* ── País: combobox con banderas ── */
+    function setupCountryCombo(
+      onChange?: (code: string | null) => void,
+    ): CountryComboApi | null {
+      const combo = root.querySelector<HTMLElement>("[data-country-combo]");
+      const codeInput = root.querySelector<HTMLInputElement>("[data-country-code]");
+      const suggestionBtn = root.querySelector<HTMLButtonElement>(
+        "[data-country-suggestion]",
+      );
+      if (!combo || !codeInput) return null;
+
+      const input = combo.querySelector<HTMLInputElement>("[data-country-input]");
+      const list = combo.querySelector<HTMLElement>("[data-country-list]");
+      const flagImg = combo.querySelector<HTMLImageElement>(
+        "[data-country-flag-img]",
+      );
+      const globe = combo.querySelector<HTMLElement>("[data-country-globe]");
+      if (!input || !list) return null;
+
+      const options = Array.from(
+        list.querySelectorAll<HTMLElement>("[data-country-option]"),
+      );
+      let filtered = options.slice();
+      let activeIndex = -1;
+      let isOpen = false;
+      let touched = false;
+      let suggestion: { code: string; nameEs: string; nameEn: string } | null =
+        null;
+
+      function showFlag(src: string | null) {
+        if (flagImg) {
+          if (src) {
+            flagImg.src = src;
+            flagImg.hidden = false;
+          } else {
+            flagImg.hidden = true;
+          }
+        }
+        if (globe) globe.hidden = Boolean(src);
+      }
+
+      function refresh() {
+        list!.hidden = !isOpen || filtered.length === 0;
+        input!.setAttribute("aria-expanded", String(!list!.hidden));
+      }
+
+      function close() {
+        isOpen = false;
+        refresh();
+        activeIndex = -1;
+        input!.removeAttribute("aria-activedescendant");
+        options.forEach((option) => {
+          option.classList.remove("is-active");
+        });
+      }
+
+      function open() {
+        isOpen = true;
+        refresh();
+      }
+
+      function filter(text: string) {
+        const query = normalizeText(text);
+        filtered = options.filter((option) =>
+          query ? (option.dataset.search || "").includes(query) : true,
+        );
+        options.forEach((option) => {
+          option.hidden = !filtered.includes(option);
+        });
+        activeIndex = -1;
+        input!.removeAttribute("aria-activedescendant");
+        options.forEach((option) => option.classList.remove("is-active"));
+        refresh();
+      }
+
+      function setActive(index: number) {
+        if (!filtered.length) return;
+        activeIndex =
+          ((index % filtered.length) + filtered.length) % filtered.length;
+        filtered.forEach((option, position) => {
+          option.classList.toggle("is-active", position === activeIndex);
+        });
+        const option = filtered[activeIndex];
+        input!.setAttribute("aria-activedescendant", option.id);
+        option.scrollIntoView({ block: "nearest" });
+      }
+
+      function setSelected(code: string | null) {
+        options.forEach((option) => {
+          option.setAttribute(
+            "aria-selected",
+            String(Boolean(code) && option.dataset.code === code),
+          );
+        });
+      }
+
+      function hideSuggestion() {
+        suggestion = null;
+        if (suggestionBtn) suggestionBtn.hidden = true;
+      }
+
+      function showSuggestion(country: {
+        code: string;
+        nameEs: string;
+        nameEn: string;
+      }) {
+        if (!suggestionBtn) return;
+        const name = root.dataset.lang === "en" ? country.nameEn : country.nameEs;
+        suggestion = { code: country.code, nameEs: country.nameEs, nameEn: country.nameEn };
+        const template =
+          root.dataset.countrySuggestionTemplate || "¿Quisiste decir {country}?";
+        suggestionBtn.textContent = template.replace("{country}", name);
+        suggestionBtn.hidden = false;
+      }
+
+      function applyCode(code: string, fromUser = false, notify = true) {
+        const option = options.find((item) => item.dataset.code === code);
+        if (!option) return;
+
+        input!.value = option.dataset.name || "";
+        codeInput!.value = code;
+        setSelected(code);
+        showFlag(option.dataset.flag || null);
+        hideSuggestion();
+        filter("");
+        close();
+        if (fromUser) touched = true;
+        if (notify) onChange?.(code);
+        save();
+      }
+
+      function finalize() {
+        const text = input!.value.trim();
+
+        if (!text) {
+          codeInput!.value = "";
+          setSelected(null);
+          showFlag(null);
+          hideSuggestion();
+          onChange?.(null);
+          save();
+          return;
+        }
+
+        const exact = findByText(text);
+        if (exact) {
+          applyCode(exact.code, true);
+          return;
+        }
+
+        const nearby = suggestCountry(text);
+        if (nearby) {
+          showSuggestion(nearby);
+        } else {
+          hideSuggestion();
+        }
+
+        codeInput!.value = "otro";
+        setSelected(null);
+        showFlag(null);
+        onChange?.(null);
+        save();
+      }
+
+      input.addEventListener("focus", () => {
+        filter(input.value);
+        open();
+      });
+
+      input.addEventListener("input", () => {
+        touched = true;
+        hideSuggestion();
+        codeInput!.value = "";
+        showFlag(null);
+        filter(input.value);
+        open();
+      });
+
+      input.addEventListener("blur", () => {
+        close();
+        finalize();
+      });
+
+      input.addEventListener("keydown", (event) => {
+        if (event.key === "ArrowDown") {
+          event.preventDefault();
+          if (!isOpen) {
+            filter(input.value);
+            open();
+          }
+          setActive(activeIndex + 1);
+        } else if (event.key === "ArrowUp") {
+          event.preventDefault();
+          if (!isOpen) {
+            filter(input.value);
+            open();
+          }
+          setActive(activeIndex <= 0 ? filtered.length - 1 : activeIndex - 1);
+        } else if (event.key === "Enter") {
+          if (isOpen) {
+            event.preventDefault();
+            if (activeIndex >= 0 && filtered[activeIndex]) {
+              applyCode(filtered[activeIndex].dataset.code || "", true);
+            } else if (suggestion) {
+              applyCode(suggestion.code, true);
+            } else {
+              finalize();
+            }
+          } else if (suggestion) {
+            event.preventDefault();
+            applyCode(suggestion.code, true);
+          }
+        } else if (event.key === "Escape") {
+          event.preventDefault();
+          close();
+        }
+      });
+
+      list.addEventListener("mousedown", (event) => event.preventDefault());
+      options.forEach((option) => {
+        option.addEventListener("click", () => {
+          applyCode(option.dataset.code || "", true);
+        });
+      });
+      suggestionBtn?.addEventListener("click", () => {
+        if (suggestion) applyCode(suggestion.code, true);
+      });
+
+      return {
+        sync() {
+          const text = input.value.trim();
+          const exact = findByText(text);
+
+          if (exact) {
+            applyCode(exact.code, false, false);
+          } else if (text) {
+            if (!codeInput.value) codeInput.value = "otro";
+            setSelected(null);
+            showFlag(null);
+            hideSuggestion();
+          } else {
+            codeInput.value = "";
+            setSelected(null);
+            showFlag(null);
+            hideSuggestion();
+          }
+        },
+        applyCode,
+        touched: () => touched,
+        value: () => input.value,
+      };
+    }
+
+    /* ── WhatsApp: país y validación por país ── */
+    function setupPhoneCombo(): PhoneComboApi | null {
+      const wrap = root.querySelector<HTMLElement>("[data-phone-country]");
+      const codeInput = root.querySelector<HTMLInputElement>("[data-phone-code]");
+      if (!wrap || !codeInput) return null;
+
+      const trigger = wrap.querySelector<HTMLButtonElement>("[data-phone-trigger]");
+      const list = wrap.querySelector<HTMLElement>("[data-phone-list]");
+      const flagImg = wrap.querySelector<HTMLImageElement>("[data-phone-flag]");
+      const dial = wrap.querySelector<HTMLElement>("[data-phone-dial]");
+      if (!trigger || !list) return null;
+
+      const options = Array.from(
+        list.querySelectorAll<HTMLElement>("[data-country-option]"),
+      );
+      let activeIndex = -1;
+      let isOpen = false;
+      let touched = false;
+
+      function refresh() {
+        list!.hidden = !isOpen;
+        trigger!.setAttribute("aria-expanded", String(isOpen));
+      }
+
+      function close() {
+        isOpen = false;
+        activeIndex = -1;
+        refresh();
+        trigger!.removeAttribute("aria-activedescendant");
+        options.forEach((option) => {
+          option.classList.remove("is-active");
+        });
+      }
+
+      function open() {
+        isOpen = true;
+        refresh();
+      }
+
+      function setActive(index: number) {
+        if (!options.length) return;
+        activeIndex = ((index % options.length) + options.length) % options.length;
+        options.forEach((option, position) => {
+          option.classList.toggle("is-active", position === activeIndex);
+        });
+        const option = options[activeIndex];
+        trigger!.setAttribute("aria-activedescendant", option.id);
+        option.scrollIntoView({ block: "nearest" });
+      }
+
+      function setCode(code: string, fromUser = false) {
+        const option =
+          options.find((item) => item.dataset.code === code) || options[0];
+        if (!option) return;
+
+        codeInput!.value = option.dataset.code || "";
+        if (flagImg) flagImg.src = option.dataset.flag || "";
+        if (dial) dial.textContent = `+${option.dataset.dial || ""}`;
+
+        options.forEach((item) => {
+          item.setAttribute("aria-selected", String(item === option));
+        });
+
+        if (fromUser) touched = true;
+        close();
+        save();
+      }
+
+      trigger.addEventListener("click", () => {
+        if (isOpen) {
+          close();
+        } else {
+          open();
+          setActive(0);
+        }
+      });
+
+      trigger.addEventListener("keydown", (event) => {
+        if (event.key === "ArrowDown" || event.key === "ArrowUp") {
+          event.preventDefault();
+          if (!isOpen) {
+            open();
+            setActive(0);
+          } else {
+            setActive(
+              activeIndex + (event.key === "ArrowDown" ? 1 : options.length - 1),
+            );
+          }
+        } else if (event.key === "Enter" || event.key === " ") {
+          event.preventDefault();
+          if (!isOpen) {
+            open();
+            setActive(0);
+          } else if (activeIndex >= 0) {
+            setCode(options[activeIndex].dataset.code || "", true);
+          }
+        } else if (event.key === "Escape") {
+          event.preventDefault();
+          close();
+        }
+      });
+
+      list.addEventListener("mousedown", (event) => event.preventDefault());
+      options.forEach((option) => {
+        option.addEventListener("click", () => {
+          setCode(option.dataset.code || "", true);
+        });
+      });
+      trigger.addEventListener("blur", close);
+
+      return {
+        sync() {
+          if (getByCode(codeInput.value)) {
+            setCode(codeInput.value, false);
+          } else {
+            setCode("EC", false);
+          }
+        },
+        setCode,
+        isTouched: () => touched,
+        code: () => codeInput.value,
+      };
+    }
+
+    /* ── Correo: error y sugerencias ── */
+    function setupEmailHints() {
+      const input = form!.querySelector<HTMLInputElement>('[name="correo"]');
+      const button = root.querySelector<HTMLButtonElement>("[data-email-suggestion]");
+      if (!input) return;
+
+      let suggestion: string | null = null;
+
+      function hideSuggestion() {
+        suggestion = null;
+        if (button) button.hidden = true;
+      }
+
+      function evaluate(showError: boolean) {
+        const value = input!.value.trim();
+        if (!value) {
+          hideSuggestion();
+          return;
+        }
+
+        const fixed = suggestEmailFix(value);
+        if (fixed && button) {
+          const template =
+            root.dataset.emailSuggestionTemplate || "¿Quisiste decir {email}?";
+          suggestion = fixed;
+          button.textContent = template.replace("{email}", fixed);
+          button.hidden = false;
+        } else {
+          hideSuggestion();
+        }
+
+        if (showError) {
+          if (!isValidEmail(value)) {
+            setError("correo", root.dataset.emailError || "Correo inválido");
+          } else {
+            clearError("correo");
+          }
+        }
+      }
+
+      input.addEventListener("blur", () => evaluate(true));
+      input.addEventListener("input", hideSuggestion);
+
+      button?.addEventListener("click", () => {
+        if (!suggestion) return;
+        input.value = suggestion;
+        hideSuggestion();
+        clearError("correo");
+        save();
+        input.focus();
+      });
+    }
+
+    const phoneCombo = setupPhoneCombo();
+    const countryCombo = setupCountryCombo((code) => {
+      if (code && phoneCombo && !phoneCombo.isTouched()) {
+        phoneCombo.setCode(code, false);
+      }
+    });
+    setupEmailHints();
+
+    const phoneInput = form.querySelector<HTMLInputElement>("[data-phone-input]");
+    if (phoneInput) {
+      phoneInput.addEventListener("input", () => {
+        const cleaned = phoneInput.value.replace(/[^\d+\s-]/g, "");
+        if (cleaned !== phoneInput.value) {
+          const cursor = phoneInput.selectionStart ?? phoneInput.value.length;
+          const kept = phoneInput.value
+            .slice(0, cursor)
+            .replace(/[^\d+\s-]/g, "").length;
+          phoneInput.value = cleaned;
+          phoneInput.setSelectionRange(kept, kept);
+        }
+        clearError("whatsapp");
+      });
+
+      phoneInput.addEventListener("blur", () => {
+        const raw = phoneInput.value.trim();
+        if (!raw) {
+          clearError("whatsapp");
+          return;
+        }
+
+        const result = normalizePhone(phoneCombo?.code(), raw);
+        if (result.ok) {
+          phoneInput.value = result.value;
+          clearError("whatsapp");
+          save();
+          return;
+        }
+
+        const message =
+          result.error === "ec_mobile_format"
+            ? root.dataset.phoneEcError || ""
+            : root.dataset.phoneLengthError || "";
+        setError("whatsapp", message);
+      });
     }
 
     const objetivos = Array.from(
@@ -628,10 +1309,51 @@ function autocompleteFor(key: string): string | undefined {
       return root.dataset.lang === "en" ? "Send" : "Enviar";
     }
 
+    async function fillFromGeo() {
+      try {
+        const response = await fetch("/api/geo", {
+          headers: { Accept: "application/json" },
+        });
+        if (!response.ok) return;
+
+        const data = (await response.json()) as {
+          country?: string | null;
+          city?: string | null;
+        };
+        if (!data) return;
+
+        const detected = getByCode(data.country || null);
+        if (
+          detected &&
+          countryCombo &&
+          countryCombo.value().trim() === "" &&
+          !countryCombo.touched()
+        ) {
+          countryCombo.applyCode(detected.code, false);
+        }
+
+        if (typeof data.city === "string" && data.city.trim()) {
+          const cityField = form!.querySelector<HTMLInputElement>(
+            '[name="ciudad"]',
+          );
+          if (cityField && cityField.value.trim() === "") {
+            cityField.value = data.city.trim();
+            save();
+          }
+        }
+      } catch {
+        /* sin geolocalización: se deja vacío */
+      }
+    }
+
     restore();
     applyConditionals();
     showStep(stepIndex, false);
     if (timeInput) timeInput.value = "0";
+
+    countryCombo?.sync();
+    phoneCombo?.sync();
+    void fillFromGeo();
   }
 
   document.querySelectorAll<HTMLElement>("[data-brief]").forEach(initBrief);
@@ -805,6 +1527,164 @@ function autocompleteFor(key: string): string | undefined {
     min-height: 7.5rem;
     resize: vertical;
     line-height: 1.6;
+  }
+
+  .country-combo {
+    position: relative;
+  }
+
+  .country-input-wrap {
+    position: relative;
+  }
+
+  .country-input {
+    padding-left: 2.85rem;
+  }
+
+  .country-flag {
+    position: absolute;
+    top: 50%;
+    left: 0.95rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 24px;
+    height: 24px;
+    transform: translateY(-50%);
+    pointer-events: none;
+    color: hsl(var(--muted-foreground));
+  }
+
+  .country-flag img,
+  .country-option img,
+  .phone-trigger img {
+    width: 24px;
+    height: auto;
+    flex-shrink: 0;
+    border-radius: 2px;
+  }
+
+  .globe-icon {
+    display: block;
+  }
+
+  .country-list {
+    position: absolute;
+    z-index: 40;
+    top: calc(100% + 0.35rem);
+    right: 0;
+    left: 0;
+    max-height: 16rem;
+    margin: 0;
+    padding: 0.35rem;
+    overflow-y: auto;
+    list-style: none;
+    border: 1px solid hsl(var(--border));
+    border-radius: var(--radius);
+    background: hsl(var(--popover));
+    box-shadow: 0 18px 40px hsl(0 0% 0% / 0.35);
+  }
+
+  .country-option {
+    display: flex;
+    align-items: center;
+    gap: 0.65rem;
+    padding: 0.55rem 0.6rem;
+    border-radius: calc(var(--radius) - 2px);
+    color: hsl(var(--popover-foreground));
+    cursor: pointer;
+  }
+
+  .country-option:hover,
+  .country-option.is-active {
+    background: hsl(var(--primary) / 0.18);
+  }
+
+  .country-option-name {
+    flex: 1;
+    min-width: 0;
+    font-size: 0.9rem;
+  }
+
+  .country-option-dial {
+    font-size: 0.8rem;
+    color: hsl(var(--muted-foreground));
+  }
+
+  .phone-row {
+    display: flex;
+    align-items: stretch;
+    gap: 0.5rem;
+  }
+
+  .phone-country {
+    position: relative;
+    flex-shrink: 0;
+  }
+
+  .phone-trigger {
+    display: flex;
+    align-items: center;
+    gap: 0.4rem;
+    height: 100%;
+    min-height: 3.05rem;
+    padding: 0.6rem 0.7rem;
+    border: 1px solid hsl(var(--border));
+    border-radius: var(--radius);
+    background: hsl(var(--input) / 0.55);
+    color: hsl(var(--foreground));
+    font: inherit;
+    font-size: 0.92rem;
+    cursor: pointer;
+    transition:
+      border-color var(--transition-fast),
+      box-shadow var(--transition-fast);
+  }
+
+  .phone-trigger:hover {
+    border-color: hsl(var(--primary) / 0.5);
+  }
+
+  .phone-trigger:focus-visible {
+    outline: none;
+    border-color: hsl(var(--primary) / 0.7);
+    box-shadow: 0 0 0 3px hsl(var(--primary) / 0.15);
+  }
+
+  .phone-dial {
+    white-space: nowrap;
+    font-variant-numeric: tabular-nums;
+  }
+
+  .phone-input {
+    flex: 1;
+    min-width: 0;
+  }
+
+  .phone-list {
+    right: auto;
+    left: 0;
+    width: min(18rem, 80vw);
+  }
+
+  .suggestion {
+    align-self: flex-start;
+    margin: 0;
+    padding: 0;
+    border: 0;
+    background: none;
+    color: hsl(var(--primary));
+    font: inherit;
+    font-size: 0.85rem;
+    line-height: 1.4;
+    text-align: left;
+    text-decoration: underline;
+    text-underline-offset: 2px;
+    cursor: pointer;
+  }
+
+  .suggestion:hover {
+    color: hsl(var(--primary) / 0.8);
   }
 
   .choices {
@@ -998,7 +1878,8 @@ function autocompleteFor(key: string): string | undefined {
     .progress-fill,
     .choice,
     .text-input,
-    .text-area {
+    .text-area,
+    .phone-trigger {
       transition: none;
     }
   }
