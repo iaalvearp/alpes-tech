@@ -4,7 +4,7 @@ CREATE TABLE IF NOT EXISTS brief_submissions (
   lang TEXT NOT NULL,
   status TEXT NOT NULL DEFAULT 'nuevo',
   nombre TEXT NOT NULL, empresa TEXT NOT NULL, correo TEXT NOT NULL,
-  whatsapp TEXT, ciudad TEXT, pais TEXT, actividad TEXT,
+  whatsapp TEXT, whatsapp_pais TEXT, ciudad TEXT, pais TEXT, pais_codigo TEXT, actividad TEXT,
   tiene_web TEXT, web_actual_url TEXT,
   idiomas TEXT, volumen TEXT, materiales TEXT,
   estilo TEXT, referencias TEXT, plazo TEXT, mantenimiento TEXT,
