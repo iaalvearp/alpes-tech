@@ -1,0 +1,1005 @@
+---
+import SectionHeading from "../ui/SectionHeading.astro";
+import {
+  briefContent,
+  type BriefChoiceQuestion,
+  type BriefQuestion,
+  type Lang,
+} from "../../data/brief-content";
+import { TEXT_FIELDS, TEXT_LIMITS } from "../../data/brief-schema";
+
+interface Props {
+  lang?: Lang;
+}
+
+const { lang = "es" } = Astro.props;
+const t = briefContent[lang];
+const totalSteps = t.steps.length;
+
+function isChoice(q: BriefQuestion): q is BriefChoiceQuestion {
+  return q.type === "single" || q.type === "multi";
+}
+
+function limitFor(key: string): number {
+  const kind = TEXT_FIELDS[key as keyof typeof TEXT_FIELDS];
+  return kind ? TEXT_LIMITS[kind] : TEXT_LIMITS.short;
+}
+
+function autocompleteFor(key: string): string | undefined {
+  switch (key) {
+    case "nombre":
+      return "name";
+    case "empresa":
+      return "organization";
+    case "correo":
+      return "email";
+    case "whatsapp":
+      return "tel";
+    default:
+      return "off";
+  }
+}
+---
+
+<section class="brief-header" aria-label={lang === "es" ? "Cabecera del brief" : "Brief header"}>
+  <div class="triangle-pattern brief-header-pattern" aria-hidden="true"></div>
+  <div class="orb orb-primary brief-header-orb" aria-hidden="true"></div>
+
+  <div class="container brief-header-content animate-fade-up">
+    <SectionHeading
+      eyebrow={t.eyebrow}
+      title={t.heading}
+      subtitle={t.subtitle}
+      as="h1"
+    />
+  </div>
+</section>
+
+<section class="section brief-section">
+  <div class="container brief-container">
+    <div
+      class="brief-wizard glass"
+      data-brief
+      data-lang={lang}
+      data-total={totalSteps}
+      data-progress-template={t.progress}
+      data-required-error={t.requiredError}
+      data-email-error={t.emailError}
+      data-consent-error={t.consentError}
+      data-max-error={t.maxError}
+      data-error-text={t.errorText}
+      data-sending-text={t.sending}
+    >
+      <div class="progress-wrap" data-progress-wrap>
+        <div
+          class="progress-track"
+          role="progressbar"
+          aria-valuemin="1"
+          aria-valuemax={totalSteps}
+          aria-valuenow="1"
+          aria-label={t.progress.replace("{current}", "1").replace("{total}", String(totalSteps))}
+          data-progress-bar
+        >
+          <div class="progress-fill" data-progress-fill></div>
+        </div>
+        <p class="progress-label" aria-live="polite" data-progress-label>
+          {t.progress.replace("{current}", "1").replace("{total}", String(totalSteps))}
+        </p>
+      </div>
+
+      <form novalidate data-brief-form>
+        <input type="hidden" name="tiempo_ms" value="0" data-time />
+        <div class="hp-field" aria-hidden="true">
+          <label for="brief-hp">No rellenar</label>
+          <input
+            id="brief-hp"
+            type="text"
+            name="sitio_web"
+            tabindex="-1"
+            autocomplete="off"
+          />
+        </div>
+
+        {
+          t.steps.map((step, index) => (
+            <section
+              class="wizard-step"
+              data-step={index + 1}
+              hidden={index !== 0}
+              aria-labelledby={`brief-step-${index + 1}`}
+            >
+              <h2 id={`brief-step-${index + 1}`} tabindex="-1">
+                {step.title}
+              </h2>
+              {step.intro && <p class="step-intro">{step.intro}</p>}
+
+              <div class="fields">
+                {step.questions.map((q) =>
+                  isChoice(q) ? (
+                    <fieldset
+                      class="field choice-field"
+                      data-field={q.key}
+                      data-conditional={q.showIf ? JSON.stringify(q.showIf) : undefined}
+                      hidden={Boolean(q.showIf)}
+                    >
+                      <legend class="field-label">
+                        {q.label}
+                        {q.max && (
+                          <span class="field-hint">
+                            {t.maxError.replace("{max}", String(q.max))}
+                          </span>
+                        )}
+                      </legend>
+                      <div class="choices">
+                        {q.options.map((option) => (
+                          <label class="choice">
+                            <input
+                              class="choice-input"
+                              type={q.type === "multi" ? "checkbox" : "radio"}
+                              name={q.key}
+                              value={option.key}
+                              data-choice
+                            />
+                            <span class="choice-box" aria-hidden="true" />
+                            <span class="choice-label">{option.label}</span>
+                          </label>
+                        ))}
+                      </div>
+                      <p class="field-error" data-error-for={q.key} role="alert" hidden />
+                    </fieldset>
+                  ) : (
+                    <div
+                      class="field"
+                      data-field={q.key}
+                      data-conditional={q.showIf ? JSON.stringify(q.showIf) : undefined}
+                      hidden={Boolean(q.showIf)}
+                    >
+                      <label class="field-label" for={`brief-field-${q.key}`}>
+                        {q.label}
+                        {q.required && <span class="req" aria-hidden="true">*</span>}
+                      </label>
+                      {q.type === "textarea" ? (
+                        <textarea
+                          class="text-area"
+                          id={`brief-field-${q.key}`}
+                          name={q.key}
+                          maxlength={limitFor(q.key)}
+                          placeholder={q.placeholder}
+                          required={q.required}
+                        />
+                      ) : (
+                        <input
+                          class="text-input"
+                          id={`brief-field-${q.key}`}
+                          type={q.type}
+                          name={q.key}
+                          maxlength={limitFor(q.key)}
+                          placeholder={q.placeholder}
+                          autocomplete={autocompleteFor(q.key)}
+                          required={q.required}
+                        />
+                      )}
+                      <p class="field-error" data-error-for={q.key} role="alert" hidden />
+                    </div>
+                  )
+                )}
+              </div>
+
+              {index === totalSteps - 1 && (
+                <div class="field consent-field" data-field="consentimiento">
+                  <label class="consent-label">
+                    <input type="checkbox" name="consentimiento" value="true" />
+                    <span>{t.consentLabel}</span>
+                  </label>
+                  <p
+                    class="field-error"
+                    data-error-for="consentimiento"
+                    role="alert"
+                    hidden
+                  />
+                </div>
+              )}
+            </section>
+          ))
+        }
+
+        <div class="wizard-actions">
+          <button type="button" class="btn btn-secondary" data-back hidden>
+            {t.back}
+          </button>
+          <button type="button" class="btn btn-primary" data-next>
+            {t.next}
+          </button>
+          <button type="submit" class="btn btn-primary" data-submit hidden>
+            {t.submit}
+          </button>
+        </div>
+
+        <p class="form-status" role="alert" aria-live="assertive" data-form-status hidden />
+      </form>
+
+      <div class="wizard-success" data-success hidden>
+        <div class="success-icon" aria-hidden="true">✓</div>
+        <h2 tabindex="-1">{t.successTitle}</h2>
+        <p>{t.successText}</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<script>
+  const EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+
+  function initBrief(root: HTMLElement) {
+    const form = root.querySelector<HTMLFormElement>("[data-brief-form]");
+    if (!form) return;
+
+    const lang = root.dataset.lang || "es";
+    const total = Number(root.dataset.total || "6");
+    const storageKey = `alpes-brief-draft-${lang}`;
+    const progressTemplate =
+      root.dataset.progressTemplate || "Paso {current} de {total}";
+    const reduceMotion = window.matchMedia(
+      "(prefers-reduced-motion: reduce)",
+    ).matches;
+
+    const steps = Array.from(
+      root.querySelectorAll<HTMLElement>("[data-step]"),
+    );
+    const progressWrap = root.querySelector<HTMLElement>("[data-progress-wrap]");
+    const progressBar = root.querySelector<HTMLElement>("[data-progress-bar]");
+    const progressFill = root.querySelector<HTMLElement>("[data-progress-fill]");
+    const progressLabel = root.querySelector<HTMLElement>("[data-progress-label]");
+    const backBtn = root.querySelector<HTMLButtonElement>("[data-back]");
+    const nextBtn = root.querySelector<HTMLButtonElement>("[data-next]");
+    const submitBtn = root.querySelector<HTMLButtonElement>("[data-submit]");
+    const statusEl = root.querySelector<HTMLElement>("[data-form-status]");
+    const successEl = root.querySelector<HTMLElement>("[data-success]");
+    const timeInput = root.querySelector<HTMLInputElement>("[data-time]");
+    const consent = form.querySelector<HTMLInputElement>(
+      'input[name="consentimiento"]',
+    );
+    const startedAt = Date.now();
+    let stepIndex = 0;
+
+    if (steps.length === 0) return;
+
+    function control(name: string): HTMLInputElement | HTMLTextAreaElement | null {
+      return form!.querySelector<HTMLInputElement | HTMLTextAreaElement>(
+        `[name="${name}"]`,
+      );
+    }
+
+    function getValue(name: string): string {
+      const checked = form!.querySelector<HTMLInputElement>(
+        `input[name="${name}"]:checked`,
+      );
+      return checked ? checked.value : "";
+    }
+
+    function clearStatus() {
+      if (!statusEl) return;
+      statusEl.hidden = true;
+      statusEl.textContent = "";
+    }
+
+    function setError(name: string, message: string) {
+      const error = root.querySelector<HTMLElement>(
+        `[data-error-for="${name}"]`,
+      );
+      if (!error) return;
+      error.textContent = message;
+      error.hidden = false;
+    }
+
+    function clearError(name: string) {
+      const error = root.querySelector<HTMLElement>(
+        `[data-error-for="${name}"]`,
+      );
+      if (!error) return;
+      error.textContent = "";
+      error.hidden = true;
+    }
+
+    function clearStepErrors(section: HTMLElement) {
+      section.querySelectorAll<HTMLElement>("[data-error-for]").forEach((el) => {
+        el.textContent = "";
+        el.hidden = true;
+      });
+      section
+        .querySelectorAll<HTMLElement>('[aria-invalid="true"]')
+        .forEach((el) => el.removeAttribute("aria-invalid"));
+    }
+
+    function applyConditionals() {
+      root.querySelectorAll<HTMLElement>("[data-conditional]").forEach((wrapper) => {
+        let rule: { field?: string; equals?: string; notEquals?: string } = {};
+        try {
+          rule = JSON.parse(wrapper.dataset.conditional || "{}");
+        } catch {
+          rule = {};
+        }
+        if (!rule.field) return;
+
+        const value = getValue(rule.field);
+        let visible = true;
+        if (rule.equals !== undefined) {
+          visible = value === rule.equals;
+        } else if (rule.notEquals !== undefined) {
+          visible = value !== "" && value !== rule.notEquals;
+        }
+
+        wrapper.hidden = !visible;
+        wrapper
+          .querySelectorAll<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>(
+            "input, textarea, select",
+          )
+          .forEach((el) => {
+            el.disabled = !visible;
+          });
+      });
+    }
+
+    function collect(): Record<string, string | string[]> {
+      const data: Record<string, string | string[]> = {};
+      form!.querySelectorAll<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>(
+        "input, textarea, select",
+      ).forEach((el) => {
+        if (!el.name || el.disabled) return;
+        if (el.name === "sitio_web" || el.name === "tiempo_ms") return;
+        if (el.name === "consentimiento") return;
+
+        if (el instanceof HTMLInputElement && el.type === "checkbox") {
+          if (!Array.isArray(data[el.name])) data[el.name] = [];
+          if (el.checked) (data[el.name] as string[]).push(el.value);
+        } else if (el instanceof HTMLInputElement && el.type === "radio") {
+          if (el.checked) data[el.name] = el.value;
+        } else {
+          data[el.name] = el.value;
+        }
+      });
+      return data;
+    }
+
+    function payload() {
+      const data = collect();
+      const clean: Record<string, unknown> = {};
+      Object.keys(data).forEach((key) => {
+        const value = data[key];
+        if (Array.isArray(value)) {
+          if (value.length > 0) clean[key] = value;
+        } else if (typeof value === "string" && value.trim() !== "") {
+          clean[key] = value.trim();
+        }
+      });
+      clean.consentimiento = Boolean(consent?.checked);
+      clean.lang = lang;
+      clean.sitio_web = root.querySelector<HTMLInputElement>('[name="sitio_web"]')?.value || "";
+      clean.tiempo_ms = Date.now() - startedAt;
+      return clean;
+    }
+
+    function save() {
+      try {
+        localStorage.setItem(
+          storageKey,
+          JSON.stringify({ step: stepIndex, values: collect() }),
+        );
+      } catch {
+        /* localStorage no disponible: el formulario sigue funcionando */
+      }
+    }
+
+    function clearDraft() {
+      try {
+        localStorage.removeItem(storageKey);
+      } catch {
+        /* noop */
+      }
+    }
+
+    function restore() {
+      try {
+        const raw = localStorage.getItem(storageKey);
+        if (!raw) return;
+        const saved = JSON.parse(raw) as {
+          step?: number;
+          values?: Record<string, string | string[]>;
+        };
+        if (!saved || typeof saved !== "object") return;
+
+        const values = saved.values || {};
+        Object.keys(values).forEach((name) => {
+          const value = values[name];
+          form!
+            .querySelectorAll<HTMLInputElement | HTMLTextAreaElement>(`[name="${name}"]`)
+            .forEach((el) => {
+              if (el instanceof HTMLInputElement && el.type === "radio") {
+                el.checked = el.value === value;
+              } else if (el instanceof HTMLInputElement && el.type === "checkbox") {
+                el.checked = Array.isArray(value) && value.includes(el.value);
+              } else if (typeof value === "string") {
+                el.value = value;
+              }
+            });
+        });
+
+        if (Number.isInteger(saved.step)) {
+          stepIndex = Math.min(Math.max(saved.step as number, 0), total - 1);
+        }
+      } catch {
+        /* borrador inválido o inaccesible: se ignora */
+      }
+    }
+
+    function showStep(next: number, focus = true) {
+      stepIndex = Math.min(Math.max(next, 0), total - 1);
+      steps.forEach((section, index) => {
+        section.hidden = index !== stepIndex;
+      });
+
+      if (backBtn) backBtn.hidden = stepIndex === 0;
+      if (nextBtn) nextBtn.hidden = stepIndex === total - 1;
+      if (submitBtn) submitBtn.hidden = stepIndex !== total - 1;
+
+      const percent = ((stepIndex + 1) / total) * 100;
+      if (progressFill) progressFill.style.width = `${percent}%`;
+      if (progressBar) {
+        progressBar.setAttribute("aria-valuenow", String(stepIndex + 1));
+      }
+      if (progressLabel) {
+        progressLabel.textContent = progressTemplate
+          .replace("{current}", String(stepIndex + 1))
+          .replace("{total}", String(total));
+      }
+
+      clearStatus();
+      applyConditionals();
+      save();
+
+      if (focus) {
+        const heading = steps[stepIndex].querySelector<HTMLElement>("h2");
+        if (heading) heading.focus({ preventScroll: true });
+        const top = root.getBoundingClientRect().top + window.scrollY - 90;
+        window.scrollTo({
+          top,
+          behavior: reduceMotion ? "auto" : "smooth",
+        });
+      }
+    }
+
+    function validateStep(index: number): boolean {
+      const section = steps[index];
+      if (!section) return true;
+      clearStepErrors(section);
+
+      let firstInvalid: HTMLElement | null = null;
+
+      if (index === 0) {
+        ["nombre", "empresa", "correo"].forEach((name) => {
+          const field = control(name);
+          const value = field ? field.value.trim() : "";
+          let message = "";
+
+          if (!value) {
+            message = root.dataset.requiredError || "Obligatorio";
+          } else if (name === "correo" && !EMAIL_RE.test(value)) {
+            message = root.dataset.emailError || "Correo inválido";
+          }
+
+          if (message && field) {
+            setError(name, message);
+            field.setAttribute("aria-invalid", "true");
+            if (!firstInvalid) firstInvalid = field;
+          }
+        });
+      }
+
+      if (index === total - 1 && consent && !consent.checked) {
+        setError(
+          "consentimiento",
+          root.dataset.consentError || root.dataset.requiredError || "Obligatorio",
+        );
+        consent.setAttribute("aria-invalid", "true");
+        if (!firstInvalid) firstInvalid = consent;
+      }
+
+      if (firstInvalid) {
+        firstInvalid.focus();
+        return false;
+      }
+      return true;
+    }
+
+    const objetivos = Array.from(
+      form.querySelectorAll<HTMLInputElement>('input[name="objetivos"]'),
+    );
+
+    form.addEventListener("input", (event) => {
+      const target = event.target as HTMLElement | null;
+      if (target && "name" in target && (target as HTMLInputElement).name) {
+        clearError((target as HTMLInputElement).name);
+        target.removeAttribute("aria-invalid");
+      }
+      applyConditionals();
+      save();
+    });
+
+    form.addEventListener("change", (event) => {
+      const target = event.target as HTMLElement | null;
+      if (target && "name" in target && (target as HTMLInputElement).name) {
+        const name = (target as HTMLInputElement).name;
+
+        if (name === "objetivos") {
+          if (objetivos.filter((item) => item.checked).length > 3) {
+            if (target instanceof HTMLInputElement && target.checked) {
+              target.checked = false;
+            }
+            setError(
+              "objetivos",
+              (root.dataset.maxError || "Máximo {max}").replace("{max}", "3"),
+            );
+          } else {
+            clearError("objetivos");
+          }
+        } else {
+          clearError(name);
+          target.removeAttribute("aria-invalid");
+        }
+      }
+      applyConditionals();
+      save();
+    });
+
+    nextBtn?.addEventListener("click", () => {
+      if (validateStep(stepIndex)) showStep(stepIndex + 1);
+    });
+
+    backBtn?.addEventListener("click", () => {
+      showStep(stepIndex - 1);
+    });
+
+    form.addEventListener("submit", async (event) => {
+      event.preventDefault();
+
+      if (stepIndex !== total - 1) {
+        if (validateStep(stepIndex)) showStep(stepIndex + 1);
+        return;
+      }
+
+      // Los pasos anteriores también deben conservar sus obligatorios.
+      const stepZeroOk = validateStep(0);
+      if (!stepZeroOk) {
+        showStep(0, false);
+        validateStep(0);
+        return;
+      }
+      if (!validateStep(total - 1)) return;
+
+      if (!submitBtn) return;
+      submitBtn.disabled = true;
+      submitBtn.textContent = root.dataset.sendingText || "Enviando...";
+      form.setAttribute("aria-busy", "true");
+      clearStatus();
+
+      if (timeInput) timeInput.value = String(Date.now() - startedAt);
+
+      try {
+        const response = await fetch("/api/brief", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify(payload()),
+        });
+        let data: { ok?: boolean } | null = null;
+        try {
+          data = (await response.json()) as { ok?: boolean };
+        } catch {
+          data = null;
+        }
+
+        if (!response.ok || !data || data.ok !== true) {
+          throw new Error("submit_failed");
+        }
+
+        clearDraft();
+        form.hidden = true;
+        if (progressWrap) progressWrap.hidden = true;
+        if (successEl) {
+          successEl.hidden = false;
+          const heading = successEl.querySelector<HTMLElement>("h2");
+          if (heading) heading.focus();
+        }
+        const top = root.getBoundingClientRect().top + window.scrollY - 90;
+        window.scrollTo({ top, behavior: reduceMotion ? "auto" : "smooth" });
+      } catch {
+        if (statusEl) {
+          statusEl.textContent =
+            root.dataset.errorText ||
+            "No pudimos enviar tus respuestas. Inténtalo de nuevo.";
+          statusEl.hidden = false;
+        }
+        submitBtn.disabled = false;
+        submitBtn.textContent = tSubmitLabel();
+        form.removeAttribute("aria-busy");
+      }
+    });
+
+    function tSubmitLabel(): string {
+      return root.dataset.lang === "en" ? "Send" : "Enviar";
+    }
+
+    restore();
+    applyConditionals();
+    showStep(stepIndex, false);
+    if (timeInput) timeInput.value = "0";
+  }
+
+  document.querySelectorAll<HTMLElement>("[data-brief]").forEach(initBrief);
+</script>
+
+<style>
+  .brief-header {
+    position: relative;
+    overflow: hidden;
+    padding-top: 8rem;
+    padding-bottom: 3rem;
+    background: var(--gradient-hero);
+  }
+
+  .brief-header-pattern {
+    position: absolute;
+    inset: 0;
+    opacity: 0.15;
+    pointer-events: none;
+  }
+
+  .brief-header-orb {
+    width: 400px;
+    height: 400px;
+    top: -120px;
+    left: -80px;
+    opacity: 0.18;
+    pointer-events: none;
+  }
+
+  .brief-header-content {
+    position: relative;
+    z-index: 1;
+  }
+
+  .brief-section {
+    padding-top: 2.5rem;
+  }
+
+  .brief-container {
+    max-width: 760px;
+  }
+
+  .brief-wizard {
+    border-radius: calc(var(--radius) * 1.5);
+    padding: 1.5rem;
+  }
+
+  @media (min-width: 640px) {
+    .brief-wizard {
+      padding: 2.5rem;
+    }
+  }
+
+  .progress-wrap {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+    margin-bottom: 2rem;
+  }
+
+  .progress-track {
+    height: 6px;
+    border-radius: 999px;
+    background: hsl(var(--muted));
+    overflow: hidden;
+  }
+
+  .progress-fill {
+    width: 16.666%;
+    height: 100%;
+    border-radius: inherit;
+    background: var(--gradient-primary);
+    transition: width var(--transition-base);
+  }
+
+  .progress-label {
+    font-family: "JetBrains Mono", monospace;
+    font-size: 0.75rem;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    color: hsl(var(--muted-foreground));
+  }
+
+  .wizard-step h2 {
+    font-size: clamp(1.35rem, 4vw, 1.9rem);
+    margin-bottom: 0.75rem;
+    color: hsl(var(--foreground));
+  }
+
+  .wizard-step h2:focus,
+  .wizard-success h2:focus {
+    outline: none;
+  }
+
+  .step-intro {
+    margin-bottom: 1.5rem;
+    font-size: 0.95rem;
+    color: hsl(var(--muted-foreground));
+  }
+
+  .fields {
+    display: flex;
+    flex-direction: column;
+    gap: 1.5rem;
+  }
+
+  .field {
+    display: flex;
+    flex-direction: column;
+    gap: 0.55rem;
+    min-width: 0;
+    margin: 0;
+    padding: 0;
+    border: 0;
+  }
+
+  .field-label {
+    font-size: 0.95rem;
+    font-weight: 500;
+    line-height: 1.4;
+    color: hsl(var(--foreground));
+  }
+
+  .req {
+    margin-left: 0.2rem;
+    color: hsl(var(--primary));
+  }
+
+  .field-hint {
+    display: block;
+    margin-top: 0.15rem;
+    font-size: 0.8rem;
+    font-weight: 400;
+    color: hsl(var(--muted-foreground));
+  }
+
+  .text-input,
+  .text-area {
+    width: 100%;
+    padding: 0.85rem 1rem;
+    border: 1px solid hsl(var(--border));
+    border-radius: var(--radius);
+    background: hsl(var(--input) / 0.55);
+    color: hsl(var(--foreground));
+    font: inherit;
+    font-size: 1rem;
+    transition:
+      border-color var(--transition-fast),
+      box-shadow var(--transition-fast);
+  }
+
+  .text-input::placeholder,
+  .text-area::placeholder {
+    color: hsl(var(--muted-foreground) / 0.6);
+  }
+
+  .text-input:focus,
+  .text-area:focus {
+    outline: none;
+    border-color: hsl(var(--primary) / 0.7);
+    box-shadow: 0 0 0 3px hsl(var(--primary) / 0.15);
+  }
+
+  .text-input[aria-invalid="true"],
+  .text-area[aria-invalid="true"] {
+    border-color: hsl(var(--destructive) / 0.8);
+  }
+
+  .text-area {
+    min-height: 7.5rem;
+    resize: vertical;
+    line-height: 1.6;
+  }
+
+  .choices {
+    display: flex;
+    flex-direction: column;
+    gap: 0.6rem;
+  }
+
+  .choice {
+    position: relative;
+    display: flex;
+    align-items: flex-start;
+    gap: 0.8rem;
+    padding: 0.95rem 1rem;
+    border: 1px solid hsl(var(--border) / 0.7);
+    border-radius: var(--radius);
+    background: hsl(var(--surface-2) / 0.45);
+    cursor: pointer;
+    transition:
+      border-color var(--transition-fast),
+      background var(--transition-fast),
+      box-shadow var(--transition-fast);
+  }
+
+  .choice:hover {
+    border-color: hsl(var(--primary) / 0.45);
+    background: hsl(var(--surface-2) / 0.7);
+  }
+
+  .choice:has(.choice-input:checked) {
+    border-color: hsl(var(--primary));
+    background: hsl(var(--primary) / 0.1);
+    box-shadow: 0 0 0 1px hsl(var(--primary) / 0.35);
+  }
+
+  .choice:has(.choice-input:focus-visible) {
+    outline: 2px solid hsl(var(--primary));
+    outline-offset: 3px;
+  }
+
+  .choice-input {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    opacity: 0;
+    pointer-events: none;
+  }
+
+  .choice-box {
+    position: relative;
+    flex-shrink: 0;
+    width: 1.15rem;
+    height: 1.15rem;
+    margin-top: 0.15rem;
+    border: 2px solid hsl(var(--border));
+    border-radius: 4px;
+    transition:
+      border-color var(--transition-fast),
+      background var(--transition-fast);
+  }
+
+  input[type="radio"] + .choice-box {
+    border-radius: 50%;
+  }
+
+  .choice-input:checked + .choice-box {
+    border-color: hsl(var(--primary));
+    background: hsl(var(--primary));
+  }
+
+  .choice-input:checked + .choice-box::after {
+    content: "";
+    position: absolute;
+    inset: 50% auto auto 50%;
+    width: 0.4rem;
+    height: 0.4rem;
+    border-radius: 50%;
+    background: hsl(var(--primary-foreground));
+    transform: translate(-50%, -50%);
+  }
+
+  .choice-label {
+    font-size: 0.95rem;
+    line-height: 1.45;
+  }
+
+  .field-error {
+    margin: 0;
+    font-size: 0.82rem;
+    color: hsl(var(--destructive));
+  }
+
+  .consent-field {
+    margin-top: 1.75rem;
+    padding-top: 1.5rem;
+    border-top: 1px solid hsl(var(--border) / 0.5);
+  }
+
+  .consent-label {
+    display: flex;
+    align-items: flex-start;
+    gap: 0.75rem;
+    font-size: 0.9rem;
+    color: hsl(var(--muted-foreground));
+    cursor: pointer;
+  }
+
+  .consent-label input {
+    flex-shrink: 0;
+    width: 1.15rem;
+    height: 1.15rem;
+    margin-top: 0.2rem;
+    accent-color: hsl(var(--primary));
+  }
+
+  .wizard-actions {
+    display: flex;
+    justify-content: space-between;
+    gap: 0.75rem;
+    margin-top: 2rem;
+    padding-top: 1.5rem;
+    border-top: 1px solid hsl(var(--border) / 0.5);
+  }
+
+  .wizard-actions .btn {
+    justify-content: center;
+    min-width: 7rem;
+  }
+
+  .btn:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+    transform: none;
+  }
+
+  .form-status {
+    margin-top: 1rem;
+    padding: 0.8rem 1rem;
+    border: 1px solid hsl(var(--destructive) / 0.4);
+    border-radius: var(--radius);
+    background: hsl(var(--destructive) / 0.08);
+    color: hsl(var(--foreground));
+    font-size: 0.9rem;
+  }
+
+  .wizard-success {
+    padding: 3rem 1rem;
+    text-align: center;
+  }
+
+  .success-icon {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 3.5rem;
+    height: 3.5rem;
+    margin: 0 auto 1.25rem;
+    border: 1px solid hsl(var(--primary) / 0.35);
+    border-radius: 50%;
+    background: hsl(var(--primary) / 0.12);
+    color: hsl(var(--primary));
+    font-size: 1.75rem;
+    font-weight: 700;
+  }
+
+  .wizard-success h2 {
+    margin-bottom: 0.75rem;
+    font-size: clamp(1.5rem, 4vw, 2rem);
+  }
+
+  .wizard-success p {
+    max-width: 420px;
+    margin-inline: auto;
+    color: hsl(var(--muted-foreground));
+  }
+
+  .hp-field {
+    position: absolute;
+    left: -10000px;
+    top: auto;
+    width: 1px;
+    height: 1px;
+    overflow: hidden;
+  }
+
+  [hidden] {
+    display: none !important;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .progress-fill,
+    .choice,
+    .text-input,
+    .text-area {
+      transition: none;
+    }
+  }
+</style>
