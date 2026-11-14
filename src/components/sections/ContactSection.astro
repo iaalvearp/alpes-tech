@@ -143,6 +143,12 @@ const socialLabel = lang === "en" ? "Follow us" : "Síguenos";
         </div>
       </div>
     </div>
+
+    <div class="contact-cta">
+      <a class="btn btn-secondary" href={lang === "es" ? "/es/brief" : "/brief"}>
+        {lang === "es" ? "Cuéntanos tu proyecto" : "Tell us about your project"}
+      </a>
+    </div>
   </div>
 </section>
 
@@ -270,5 +276,10 @@ const socialLabel = lang === "en" ? "Follow us" : "Síguenos";
     background: hsl(var(--primary) / 0.2);
     color: hsl(var(--foreground));
     border-color: hsl(var(--primary) / 0.4);
+  }
+
+  .contact-cta {
+    display: flex;
+    justify-content: center;
   }
 </style>
