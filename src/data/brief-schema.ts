@@ -79,7 +79,6 @@ export const SINGLE_SELECT = {
   materiales: ["todo", "algunos", "nada"],
   estilo: ["corporativo", "moderno", "calido", "elegante", "no_se"],
   plazo: ["urgente", "un_mes", "dos_tres_meses", "sin_apuro"],
-  mantenimiento: ["si", "no", "no_se"],
   dominio_tiene: ["si", "no", "no_se"],
   dominio_quien: ["empresa", "proveedor", "tercero", "no_se"],
   web_ubicacion: ["hosting", "servidor_propio", "no_se"],

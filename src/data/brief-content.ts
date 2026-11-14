@@ -284,17 +284,6 @@ const es: BriefContent = {
             { key: "sin_apuro", label: "Sin apuro" },
           ],
         },
-        {
-          key: "mantenimiento",
-          type: "single",
-          label:
-            "¿Quieres que nos encarguemos también de los cambios y el mantenimiento después?",
-          options: [
-            { key: "si", label: "Sí, que ustedes se encarguen" },
-            { key: "no", label: "No, yo me encargo" },
-            { key: "no_se", label: "No sé" },
-          ],
-        },
       ],
     },
     {
@@ -349,8 +338,7 @@ const es: BriefContent = {
         {
           key: "servidor",
           type: "single",
-          label:
-            "¿Tu empresa tiene un servidor propio o contratado? (un computador siempre encendido que guarda sistemas o archivos)",
+          label: "¿Tu empresa tiene un servidor propio o contratado?",
           options: [
             { key: "propio", label: "Sí, uno propio dentro de la empresa" },
             { key: "alquilado", label: "Sí, alquilado en internet (VPS)" },
@@ -396,7 +384,7 @@ const es: BriefContent = {
           key: "sistema_interno",
           type: "single",
           label:
-            "¿Usas algún sistema propio para inventario, facturación o pedidos?",
+            "¿Usas algún sistema propio para inventario, facturación o pedidos? (si lo hay, tu web tendría que conectarse con él)",
           options: [
             { key: "si", label: "Sí" },
             { key: "no", label: "No" },
@@ -448,17 +436,18 @@ const es: BriefContent = {
         {
           key: "redes",
           type: "single",
-          label: "¿Tienes redes sociales o Google Business?",
+          label:
+            "¿Tu empresa tiene redes sociales, como Facebook, Instagram o LinkedIn?",
           options: [
             { key: "si", label: "Sí" },
-            { key: "algunas", label: "Algunas" },
+            { key: "algunas", label: "Solo algunas" },
             { key: "no", label: "No" },
           ],
         },
         {
           key: "redes_texto",
           type: "text",
-          label: "Enlaces (opcional)",
+          label: "Pega los enlaces (opcional)",
           placeholder: "https://...",
           showIf: { field: "redes", notEquals: "no" },
         },
@@ -683,17 +672,6 @@ const en: BriefContent = {
             { key: "sin_apuro", label: "No rush" },
           ],
         },
-        {
-          key: "mantenimiento",
-          type: "single",
-          label:
-            "Would you like us to also handle changes and maintenance afterwards?",
-          options: [
-            { key: "si", label: "Yes, let your team handle it" },
-            { key: "no", label: "No, I'll handle it myself" },
-            { key: "no_se", label: "I don't know" },
-          ],
-        },
       ],
     },
     {
@@ -748,8 +726,7 @@ const en: BriefContent = {
         {
           key: "servidor",
           type: "single",
-          label:
-            "Does your company have its own or rented server? (a computer that stays on and stores systems or files)",
+          label: "Does your company have its own or rented server?",
           options: [
             { key: "propio", label: "Yes, one inside the company" },
             { key: "alquilado", label: "Yes, rented online (VPS)" },
@@ -795,7 +772,7 @@ const en: BriefContent = {
           key: "sistema_interno",
           type: "single",
           label:
-            "Do you use your own system for inventory, invoicing or orders?",
+            "Do you use your own system for inventory, billing or orders? (if so, your website would need to connect to it)",
           options: [
             { key: "si", label: "Yes" },
             { key: "no", label: "No" },
@@ -847,17 +824,18 @@ const en: BriefContent = {
         {
           key: "redes",
           type: "single",
-          label: "Do you have social media or Google Business?",
+          label:
+            "Does your company have social media, such as Facebook, Instagram or LinkedIn?",
           options: [
             { key: "si", label: "Yes" },
-            { key: "algunas", label: "Some" },
+            { key: "algunas", label: "Only some" },
             { key: "no", label: "No" },
           ],
         },
         {
           key: "redes_texto",
           type: "text",
-          label: "Links (optional)",
+          label: "Paste the links (optional)",
           placeholder: "https://...",
           showIf: { field: "redes", notEquals: "no" },
         },
