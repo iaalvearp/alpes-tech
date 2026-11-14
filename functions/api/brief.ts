@@ -16,6 +16,9 @@ import {
   type SingleQuestionKey,
   type TextFieldKey,
 } from "../../src/data/brief-schema";
+import { findByText, getByCode } from "../../src/lib/countries";
+import { isValidEmail } from "../../src/lib/email";
+import { normalizePhone } from "../../src/lib/phone";
 
 /* ── Tipos mínimos de D1 (sin dependencias externas) ── */
 interface D1Result {
@@ -41,15 +44,16 @@ interface PagesContext {
 }
 
 const MAX_BODY_BYTES = 30 * 1024;
-const EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
 const SUBMISSION_COLUMNS = [
   "nombre",
   "empresa",
   "correo",
   "whatsapp",
+  "whatsapp_pais",
   "ciudad",
   "pais",
+  "pais_codigo",
   "actividad",
   "tiene_web",
   "web_actual_url",
@@ -156,11 +160,37 @@ export const onRequest = async (context: PagesContext): Promise<Response> => {
   for (const field of REQUIRED_FIELDS) {
     if (!values[field]) invalid.push(field);
   }
-  if (values.correo && !EMAIL_RE.test(values.correo)) {
+  if (values.correo && !isValidEmail(values.correo)) {
     invalid.push("correo");
   }
   if (body.consentimiento !== true) {
     invalid.push("consentimiento");
+  }
+
+  // El país mostrado manda: el servidor no confía en el pais_codigo del cliente.
+  const countryFromText = findByText(values.pais);
+  values.pais_codigo = countryFromText ? countryFromText.code : "otro";
+
+  // WhatsApp opcional: normaliza según el país del teléfono o, si falta,
+  // según el país del brief.
+  const clientPhoneCountry = getByCode(values.whatsapp_pais);
+  if (values.whatsapp) {
+    const phoneCountry = clientPhoneCountry ?? countryFromText;
+
+    if (!phoneCountry) {
+      invalid.push("whatsapp");
+    } else {
+      const normalized = normalizePhone(phoneCountry.code, values.whatsapp);
+      if (!normalized.ok) {
+        invalid.push("whatsapp");
+      } else {
+        values.whatsapp = normalized.value;
+        values.whatsapp_pais = phoneCountry.code;
+      }
+    }
+  } else {
+    values.whatsapp = null;
+    values.whatsapp_pais = clientPhoneCountry ? clientPhoneCountry.code : null;
   }
 
   // Selección única.

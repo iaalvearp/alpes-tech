@@ -20,8 +20,10 @@ export const TEXT_FIELDS = {
   empresa: "short",
   correo: "short",
   whatsapp: "short",
+  whatsapp_pais: "short",
   ciudad: "short",
   pais: "short",
+  pais_codigo: "short",
   actividad: "textarea",
   // Paso 2
   web_actual_url: "short",
