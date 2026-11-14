@@ -404,6 +404,7 @@ function autocompleteFor(key: string): string | undefined {
         </div>
 
         <p class="form-status" role="alert" aria-live="assertive" data-form-status hidden />
+        <p class="form-status-code" data-form-status-code hidden />
       </form>
 
       <div class="wizard-success" data-success hidden>
@@ -435,6 +436,12 @@ function autocompleteFor(key: string): string | undefined {
     code: () => string;
   }
 
+  interface BriefApiResponse {
+    ok?: boolean;
+    error?: string;
+    detail?: string;
+  }
+
   function initBrief(root: HTMLElement) {
     const form = root.querySelector<HTMLFormElement>("[data-brief-form]");
     if (!form) return;
@@ -459,6 +466,7 @@ function autocompleteFor(key: string): string | undefined {
     const nextBtn = root.querySelector<HTMLButtonElement>("[data-next]");
     const submitBtn = root.querySelector<HTMLButtonElement>("[data-submit]");
     const statusEl = root.querySelector<HTMLElement>("[data-form-status]");
+    const statusCodeEl = root.querySelector<HTMLElement>("[data-form-status-code]");
     const successEl = root.querySelector<HTMLElement>("[data-success]");
     const timeInput = root.querySelector<HTMLInputElement>("[data-time]");
     const consent = form.querySelector<HTMLInputElement>(
@@ -483,9 +491,45 @@ function autocompleteFor(key: string): string | undefined {
     }
 
     function clearStatus() {
-      if (!statusEl) return;
-      statusEl.hidden = true;
-      statusEl.textContent = "";
+      if (statusEl) {
+        statusEl.hidden = true;
+        statusEl.textContent = "";
+      }
+      if (statusCodeEl) {
+        statusCodeEl.hidden = true;
+        statusCodeEl.textContent = "";
+      }
+    }
+
+    function showSubmitError(
+      status: number | null,
+      data: BriefApiResponse | null,
+    ) {
+      if (statusEl) {
+        statusEl.textContent =
+          root.dataset.errorText ||
+          "No pudimos enviar tus respuestas. Inténtalo de nuevo.";
+        statusEl.hidden = false;
+      }
+
+      if (statusCodeEl) {
+        if (
+          status !== null &&
+          data &&
+          typeof data.detail === "string" &&
+          data.detail !== ""
+        ) {
+          const error =
+            typeof data.error === "string" && data.error
+              ? data.error
+              : "error";
+          statusCodeEl.textContent = `Código: ${status} ${error} — ${data.detail}`;
+          statusCodeEl.hidden = false;
+        } else {
+          statusCodeEl.textContent = "";
+          statusCodeEl.hidden = true;
+        }
+      }
     }
 
     function setError(name: string, message: string) {
@@ -1271,15 +1315,19 @@ function autocompleteFor(key: string): string | undefined {
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify(payload()),
         });
-        let data: { ok?: boolean } | null = null;
+        let data: BriefApiResponse | null = null;
         try {
-          data = (await response.json()) as { ok?: boolean };
+          data = (await response.json()) as BriefApiResponse;
         } catch {
           data = null;
         }
 
         if (!response.ok || !data || data.ok !== true) {
-          throw new Error("submit_failed");
+          showSubmitError(response.status, data);
+          submitBtn.disabled = false;
+          submitBtn.textContent = tSubmitLabel();
+          form.removeAttribute("aria-busy");
+          return;
         }
 
         clearDraft();
@@ -1293,12 +1341,7 @@ function autocompleteFor(key: string): string | undefined {
         const top = root.getBoundingClientRect().top + window.scrollY - 90;
         window.scrollTo({ top, behavior: reduceMotion ? "auto" : "smooth" });
       } catch {
-        if (statusEl) {
-          statusEl.textContent =
-            root.dataset.errorText ||
-            "No pudimos enviar tus respuestas. Inténtalo de nuevo.";
-          statusEl.hidden = false;
-        }
+        showSubmitError(null, null);
         submitBtn.disabled = false;
         submitBtn.textContent = tSubmitLabel();
         form.removeAttribute("aria-busy");
@@ -1828,6 +1871,16 @@ function autocompleteFor(key: string): string | undefined {
     background: hsl(var(--destructive) / 0.08);
     color: hsl(var(--foreground));
     font-size: 0.9rem;
+  }
+
+  .form-status-code {
+    margin-top: 0.4rem;
+    padding: 0 0.15rem;
+    color: hsl(var(--muted-foreground));
+    font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+    font-size: 0.75rem;
+    line-height: 1.45;
+    overflow-wrap: anywhere;
   }
 
   .wizard-success {

@@ -93,6 +93,33 @@ function json(body: unknown, status = 200, extraHeaders: Record<string, string> 
   });
 }
 
+const PRODUCTION_HOSTS = new Set(["alpestech.uk", "www.alpestech.uk"]);
+
+/** Nunca expone detalles internos en el dominio de producción. */
+function isProductionHost(request: Request): boolean {
+  try {
+    return PRODUCTION_HOSTS.has(new URL(request.url).hostname.toLowerCase());
+  } catch {
+    return true;
+  }
+}
+
+function describeError(error: unknown): string {
+  const message = error instanceof Error ? error.message : String(error ?? "");
+  return message || "unknown error";
+}
+
+function jsonError500(request: Request, error: string, detail: string) {
+  const payload: { ok: false; error: string; detail?: string } = {
+    ok: false,
+    error,
+  };
+  if (!isProductionHost(request)) {
+    payload.detail = detail.slice(0, 200);
+  }
+  return json(payload, 500);
+}
+
 function asString(value: unknown): string {
   return typeof value === "string" ? value : "";
 }
@@ -243,7 +270,11 @@ export const onRequest = async (context: PagesContext): Promise<Response> => {
   }
 
   if (!env?.DB) {
-    return json({ ok: false, error: "db_not_bound" }, 500);
+    return jsonError500(
+      request,
+      "db_not_bound",
+      "D1 binding DB is not configured",
+    );
   }
 
   try {
@@ -273,7 +304,7 @@ export const onRequest = async (context: PagesContext): Promise<Response> => {
 
     await env.DB.batch(statements);
     return json({ ok: true });
-  } catch {
-    return json({ ok: false, error: "server" }, 500);
+  } catch (error) {
+    return jsonError500(request, "server", describeError(error));
   }
 };
